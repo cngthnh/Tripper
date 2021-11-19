@@ -7,14 +7,15 @@ import androidx.fragment.app.Fragment;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.SearchView;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -23,7 +24,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.io.IOException;
 import java.util.List;
 
 public class MapsFragment extends Fragment {
@@ -64,7 +64,7 @@ public class MapsFragment extends Fragment {
                             Address address = addressList.get(0);
                             LatLng latLng = new LatLng(address.getLatitude(),address.getLongitude());
                             curMap.addMarker(new MarkerOptions().position(latLng).title(address.getFeatureName()));
-                            curMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,10));
+                            curMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,15));
                         }
                     }
                     return false;
@@ -90,14 +90,6 @@ public class MapsFragment extends Fragment {
                     return false;
                 }
             });
-            searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
-                @Override
-                public void onFocusChange(View v, boolean hasFocus) {
-                    if (hasFocus == false)
-                        searchView.setEnabled(false);
-                }
-            });
-            searchView.setEnabled(false);
         }
     };
 
