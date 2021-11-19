@@ -10,4 +10,5 @@
     <color name="light_gray">#A6A6A6</color>
     <color name="dark_blue">#4c5a81</color>
     <color name="light_rose">#f79b91</color>
+    <color name="darker_gray">#202020</color>
 </resources>
