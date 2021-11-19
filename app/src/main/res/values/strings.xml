@@ -3,4 +3,7 @@
     <string name="map">Bản đồ</string>
     <string name="history">Lịch sử</string>
     <string name="profile">Trang cá nhân</string>
+    <string name="invalid_email">Email không hợp lệ</string>
+    <string name="invalid_password">Mật khẩu không hợp lệ</string>
+    <string name="invalid_password_conf">Xác nhận mật khẩu không trùng khớp</string>
 </resources>
