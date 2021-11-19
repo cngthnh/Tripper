@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="AnimationView">
+        <attr name="pattern" format="enum">
+            <enum name="star" value="0"/>
+            <enum name="cat" value="1"/>
+            <enum name="rocket" value="2"/>
+            <enum name="hamster" value="3"/>
+            <enum name="ghost" value="4"/>
+            <enum name="drone" value="5"/>
+        </attr>
+    </declare-styleable>
+</resources>
