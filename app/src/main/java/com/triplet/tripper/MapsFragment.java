@@ -2,6 +2,7 @@ package com.triplet.tripper;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
@@ -32,7 +33,6 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.TranslateAnimation;
 import android.widget.EditText;
-import android.widget.SearchView;
 import android.widget.Toast;
 
 
@@ -93,6 +93,7 @@ public class MapsFragment extends Fragment {
             curMap = googleMap;
 
             searchView = getActivity().findViewById(R.id.search_location);
+            curMap.setBuildingsEnabled(true);
 
             configureSearchView();
             setCurrentMap();
@@ -107,8 +108,12 @@ public class MapsFragment extends Fragment {
                         PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
                 onMapReady(curMap);
             }
+            curMap.setPadding(40, 40, 0, 250);
             curMap.setMyLocationEnabled(true);
+            curMap.getUiSettings().setMapToolbarEnabled(true);
+            curMap.getUiSettings().setZoomControlsEnabled(true);
             configureMyLocationButton();
+            configureCompassButton();
             fusedLocationClient.getLastLocation()
                     .addOnSuccessListener(activity, new OnSuccessListener<Location>() {
                         @SuppressLint({"DefaultLocale", "SetTextI18n"})
@@ -124,6 +129,15 @@ public class MapsFragment extends Fragment {
         }
     };
 
+    private void configureCompassButton() {
+        View compassButton = this.getView().findViewWithTag("GoogleMapCompass");
+        RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) compassButton.getLayoutParams();
+        rlp.addRule(RelativeLayout.ALIGN_PARENT_END);
+        rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+        rlp.addRule(RelativeLayout.ALIGN_PARENT_START,0);
+        rlp.topMargin = 500;
+    }
+
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.search_location_menu,menu);
@@ -133,9 +147,9 @@ public class MapsFragment extends Fragment {
     private void configureMyLocationButton() {
         View locationButton = ((View) activity.findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
         RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) locationButton.getLayoutParams();
-        rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
-        rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
-        rlp.setMargins(0, 360, 180, 0);
+        rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 0);
+        rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+        rlp.setMargins(0, 600, 0, 0);
     }
 
     private void setCurrentMap() {
