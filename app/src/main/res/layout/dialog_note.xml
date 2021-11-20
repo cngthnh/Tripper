@@ -1,37 +1,174 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="12sp">
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="300sp"
-        android:layout_weight="1">
-        <androidx.recyclerview.widget.RecyclerView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/word_note_list">
-
-        </androidx.recyclerview.widget.RecyclerView>
-
-    </FrameLayout>
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center_horizontal"
-        android:padding="12dp"
-        android:layout_weight="3">
+        android:padding="20dp"
+        android:orientation="vertical"
+        android:scrollbars="vertical"
+        android:scrollbarAlwaysDrawVerticalTrack="true">
+        <TextView
+            android:id="@+id/tv_name_card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="35dp"
+            android:fontFamily="@font/lato_black"
+            android:text="@string/event"
+            android:gravity="center"
+            android:textColor="@color/purple"
+            android:textSize="35dp"
+            android:textStyle="bold" />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_margin="6sp"
-            android:src="@drawable/ic_add"
-            android:id="@+id/floatBtnAdd">
+        <EditText
+            android:id="@+id/edt_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_input_info"
+            android:layout_marginBottom="20dp"
+            android:paddingLeft="20dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:hint="Chủ đề"
+            />
 
-        </com.google.android.material.floatingactionbutton.FloatingActionButton>
+        <EditText
+            android:id="@+id/edt_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_input_info"
+            android:layout_marginBottom="20dp"
+            android:paddingLeft="20dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:hint="Nội dung"
+            />
+
+        <EditText
+            android:id="@+id/edt_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_input_info"
+            android:layout_marginBottom="20dp"
+            android:paddingLeft="20dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:hint="Thời gian: dd/mm"
+            />
+        <EditText
+            android:id="@+id/edt_location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_input_info"
+
+            android:layout_marginBottom="20dp"
+            android:paddingLeft="20dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:hint="Địa điểm"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="5"
+            >
+
+            <Button
+                android:id="@+id/bt_add_img"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:text="Thêm ảnh"
+                android:layout_gravity="center_vertical"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"/>
+            <ImageView
+                android:id="@+id/img_view"
+                android:layout_width="match_parent"
+                android:layout_height="90dp"
+                android:layout_weight="2"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="5"
+            >
+
+            <Button
+                android:id="@+id/bt_add_video"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:text="Thêm video"
+                android:layout_gravity="center_vertical"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"/>
+            <TextView
+                android:id="@+id/tv_name_video"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:paddingStart="20dp"
+                android:paddingTop="15dp"
+                android:paddingBottom="15dp"
+                android:hint="name_video.mp4"
+                android:textSize="17dp"
+                android:textStyle="italic"
+                android:layout_gravity="center_vertical"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="5"
+            android:layout_marginTop="20dp"
+            >
+
+            <Button
+                android:id="@+id/bt_add_audio"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:text="Thêm audio"
+                android:layout_gravity="center_vertical"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"/>
+            <TextView
+                android:id="@+id/tv_name_audio"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:paddingStart="20dp"
+                android:paddingTop="15dp"
+                android:paddingBottom="15dp"
+                android:hint="name_audio.mp3"
+                android:textSize="17dp"
+                android:textStyle="italic"
+                android:layout_gravity="center_vertical"
+                />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/bt_save"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="LƯU"
+            android:fontFamily="@font/lato_black"
+            android:background="@color/light_rose"
+            android:layout_marginLeft="60dp"
+            android:layout_marginRight="60dp"/>
     </LinearLayout>
 
-</LinearLayout>
+</ScrollView>

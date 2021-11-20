@@ -6,4 +6,5 @@
     <string name="invalid_email">Email không hợp lệ</string>
     <string name="invalid_password">Mật khẩu không hợp lệ</string>
     <string name="invalid_password_conf">Xác nhận mật khẩu không trùng khớp</string>
+    <string name="event">Sự kiện</string>
 </resources>

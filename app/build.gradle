@@ -47,4 +47,6 @@ dependencies {
     implementation "androidx.recyclerview:recyclerview-selection:1.1.0"
     implementation 'com.squareup.moshi:moshi:1.12.0'
     implementation 'com.basgeekball:awesome-validation:4.3'
+    implementation 'com.ramotion.foldingcell:folding-cell:1.2.3'
+
 }

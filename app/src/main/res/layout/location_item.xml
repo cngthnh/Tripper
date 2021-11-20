@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="15dp"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:orientation="vertical">
+
+    <com.ramotion.foldingcell.FoldingCell
+        xmlns:folding-cell="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/folding_cell"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        folding-cell:animationDuration="1300"
+        folding-cell:backSideColor="@color/bgBackSideColor"
+        folding-cell:additionalFlipsCount="2"
+        folding-cell:cameraHeight="30"
+        >
+
+        <FrameLayout
+            android:id="@+id/cell_content_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:visibility="gone">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="380dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/bgContentTop"
+                    android:orientation="horizontal"
+                    android:paddingBottom="7dp"
+                    android:paddingLeft="12dp"
+                    android:paddingRight="12dp"
+                    android:paddingTop="7dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:paddingTop="2dp"
+
+                        >
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/menu_icon"
+                            android:scaleY="0.8"
+                            android:scaleX="0.8"
+                            android:gravity="center_vertical"/>
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Event"
+                        android:fontFamily="@font/lato_bold"
+                        android:gravity="center_horizontal"
+                        android:layout_weight="1"
+                        android:textColor="@android:color/white"
+                        android:textSize="22dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="right"
+                        android:text="#1"
+                        android:textColor="@android:color/white"
+                        android:textSize="20dp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/nui"
+                    android:gravity="center"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="15dp"
+                    android:paddingEnd="15dp"
+                    android:orientation="vertical"
+                    >
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Thông tin thêm"
+                        android:padding="30dp"
+                        android:gravity="center"/>
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:layout_marginBottom="6dp"
+                        android:layout_marginTop="9dp"
+                        android:background="@color/contentDividerLine"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Thông tin thêm"
+                        android:padding="30dp"
+                        android:gravity="center"/>
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:text="XEM BẢN ĐỒ"
+                    android:textSize="20dp"
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/lato_black"
+                    android:padding="12dp"
+                    android:gravity="center"
+                    android:background="@color/light_rose"/>
+            </LinearLayout>
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/cell_title_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+            <LinearLayout
+                android:id="@+id/layout_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="3">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_weight="2">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:padding="10dp"
+                        android:gravity="center"
+                        android:background="@color/bgTitleLeft">
+                        <TextView
+                            android:id="@+id/province"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Quảng Nam"
+                            android:textSize="20dp"
+                            android:layout_marginBottom="20dp"
+                            android:textColor="@color/white"
+                            android:fontFamily="@font/lato_black"
+                            android:gravity="center"
+                            />
+
+                        <TextView
+                            android:id="@+id/date"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="07-08"
+                            android:textSize="15dp"
+                            android:textColor="@color/white"
+                            android:fontFamily="@font/lato"
+                            android:gravity="center"
+                            />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_weight="1"
+                    android:background="@color/white"
+                    android:padding="20dp">
+
+                    <TextView
+                        android:id="@+id/event"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Nội dung: Ký sự tết"
+                        android:textSize="15dp"
+                        android:textColor="@color/black"
+                        android:fontFamily="@font/lato"
+                        android:layout_marginBottom="10dp"
+
+                        />
+                    <TextView
+                        android:id="@+id/location"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Địa điểm: Phố cổ hộ an"
+                        android:textSize="15dp"
+                        android:textColor="@color/black"
+                        android:fontFamily="@font/lato"
+                        android:layout_marginBottom="10dp"
+                        />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:layout_weight="1">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/lato_light"
+                                android:text="Chưa biết"
+                                android:textColor="@color/light_gray"
+                                android:textSize="13dp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:layout_weight="1">
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/light_gray"
+                                android:text="Chưa biết"
+                                android:fontFamily="@font/lato_light"
+                                android:textSize="13dp"/>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:layout_weight="1">
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/light_gray"
+                                android:text="Chưa biết"
+                                android:fontFamily="@font/lato_light"
+                                android:textSize="13dp"/>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                </LinearLayout>
+            </LinearLayout>
+        </FrameLayout>
+    </com.ramotion.foldingcell.FoldingCell>
+
+</LinearLayout>

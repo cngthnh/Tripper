@@ -71,12 +71,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 Fragment selectedFragment = null;
-
                 int nextPosition = 0;
-
                 int itemId = item.getItemId();
+
                 if (itemId == R.id.menu_history) {
-                    selectedFragment = null;
+                    selectedFragment = new LocationsFragment();
                     nextPosition = 1;
                 } else if (itemId == R.id.menu_profile) {
                     selectedFragment = null;

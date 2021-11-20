@@ -48,36 +48,15 @@ public class NoteDialog extends AppCompatDialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_note,null);
         builder.setView(view)
-                .setTitle("Vocabulary Note")
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
                     }
-                })
-        .setNeutralButton("Destroy Marker", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                marker.remove();
-            }
-        });
-        //Cai dat Recycler view
-        recyclerView = view.findViewById(R.id.word_note_list);
-        wordNoteList = new ArrayList<WordNote>();
-        //wordNoteList.add(new WordNote("Hello"));
-        wordNoteAdapter = new WordNoteAdapter(getContext(),wordNoteList);
-        recyclerView.setAdapter(wordNoteAdapter);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        recyclerView.setLayoutManager(linearLayoutManager);
-        //
-        FloatingActionButton btn = view.findViewById(R.id.floatBtnAdd);
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                wordNoteList.add(wordNoteList.size(),new WordNote(""));
-                wordNoteAdapter.notifyItemInserted(wordNoteList.size());
-            }
-        });
+                });
+
+
+
         return builder.create();
     }
 }
