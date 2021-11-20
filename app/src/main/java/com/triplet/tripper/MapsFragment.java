@@ -7,7 +7,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.pm.PackageManager;
 import androidx.appcompat.content.res.AppCompatResources;
@@ -36,6 +35,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 
+import com.arlib.floatingsearchview.FloatingSearchView;
+import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -67,7 +68,7 @@ import retrofit2.Response;
 public class MapsFragment extends Fragment {
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private GoogleMap curMap;
-    private SearchView searchView;
+    private FloatingSearchView searchView;
     private FusedLocationProviderClient fusedLocationClient;
     private Activity activity;
     MapLayoutBinding binding;
@@ -116,7 +117,6 @@ public class MapsFragment extends Fragment {
             configureCompassButton();
             fusedLocationClient.getLastLocation()
                     .addOnSuccessListener(activity, new OnSuccessListener<Location>() {
-                        @SuppressLint({"DefaultLocale", "SetTextI18n"})
                         @Override
                         public void onSuccess(Location location) {
                             // Got last known location. In some rare situations this can be null.
@@ -186,18 +186,29 @@ public class MapsFragment extends Fragment {
     }
 
     private void configureSearchView() {
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        searchView.setOnQueryChangeListener(new FloatingSearchView.OnQueryChangeListener() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
-                String location = searchView.getQuery().toString();
+            public void onSearchTextChanged(String oldQuery, String newQuery) {
+
+            }
+        });
+        searchView.setOnSearchListener(new FloatingSearchView.OnSearchListener() {
+            @Override
+            public void onSuggestionClicked(SearchSuggestion searchSuggestion) {
+
+            }
+
+            @Override
+            public void onSearchAction(String currentQuery) {
+                String location = currentQuery;
                 List<Address> addressList = null;
                 if (location != null || !location.equals("")) {
                     Geocoder geocoder = new Geocoder(getContext());
                     try {
-                        addressList = geocoder.getFromLocationName(location, 1);
+                        addressList = geocoder.getFromLocationName(location, 5);
                     } catch (Exception e) {
                         Toast.makeText(getContext(), e.toString(), Toast.LENGTH_LONG).show();
-                        return false;
+                        return;
                     }
                     if (addressList.size() == 0) {
                         Toast.makeText(getContext(), location + " not found!!", Toast.LENGTH_LONG).show();
@@ -208,14 +219,10 @@ public class MapsFragment extends Fragment {
                         curMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
                     }
                 }
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
+                return;
             }
         });
+
     }
 
     @Override

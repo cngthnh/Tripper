@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <fragment
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
@@ -22,20 +22,20 @@
         map:uiZoomGestures="true"
         tools:context=".MapsFragment" />
 
-    <androidx.appcompat.widget.SearchView
+
+    <com.arlib.floatingsearchview.FloatingSearchView
         android:id="@+id/search_location"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:layout_alignParentTop="true"
-        android:layout_marginHorizontal="15dp"
-        android:layout_alignParentLeft="true"
-        app:queryBackground="@android:color/transparent"
-        android:background="@drawable/search_location_bar"
-        android:elevation="5dp"
-        app:iconifiedByDefault="false"
-        app:queryHint="Search..."
-        android:theme="@style/Theme.Tripper" />
+        app:floatingSearch_close_search_on_keyboard_dismiss="true"
+        app:floatingSearch_leftActionMode="showHamburger"
+        app:floatingSearch_searchBarMarginLeft="10dp"
+        app:floatingSearch_searchBarMarginRight="10dp"
+        app:floatingSearch_searchBarMarginTop="40dp"
+        app:floatingSearch_searchHint="Search..."
+        app:floatingSearch_showSearchKey="true"
+        app:floatingSearch_suggestionsListAnimDuration="250" />
+
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
