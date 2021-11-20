@@ -1,6 +1,7 @@
 package com.triplet.tripper;
 
 import android.animation.LayoutTransition;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -10,6 +11,8 @@ import android.view.Window;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.navigation.NavigationBarView;
@@ -96,6 +99,4 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-
-
 }

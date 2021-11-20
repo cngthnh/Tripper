@@ -34,4 +34,6 @@
         android:queryHint="Search..."
         android:theme="@style/Theme.Tripper" />
 
+
+
 </RelativeLayout>
