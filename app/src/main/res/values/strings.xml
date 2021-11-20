@@ -8,4 +8,5 @@
     <string name="invalid_password_conf">Xác nhận mật khẩu không trùng khớp</string>
     <string name="facebook_app_id">1587624581574685</string>
     <string name="fb_login_protocol_scheme">fb1587624581574685</string>
+    <string name="mapbox_access_token">pk.eyJ1IjoiY25ndGhuaCIsImEiOiJja3c3Nm1tN2gwZ3RxMm9wYTFrNDlzMmVsIn0.s7SGiYLhUi5hzTO24Qqx1A</string>
 </resources>

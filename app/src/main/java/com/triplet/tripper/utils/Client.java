@@ -12,7 +12,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory;
 
 public class Client {
     private final static String API_KEY = "6hWcD63noaL1yjzJpSLYo7aNi6TNaJ7C-V_SMqrd1QqB";
-    private final static String BASE_URL = "https://api.dictionaryapi.dev/api/v2/";
+    private final static String BASE_URL = "https://api.mapbox.com/directions/v5/mapbox/";
     private final static OkHttpClient client = buildClient();
     private final static Retrofit retrofit = buildRetrofit(client);
 

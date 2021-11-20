@@ -9,16 +9,29 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.pm.PackageManager;
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.TranslateAnimation;
+import android.widget.EditText;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -29,12 +42,27 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.JointType;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.triplet.tripper.databinding.MapLayoutBinding;
+import com.triplet.tripper.models.map.Direction;
+import com.triplet.tripper.utils.ApiService;
+import com.triplet.tripper.utils.Client;
+
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MapsFragment extends Fragment {
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
@@ -42,6 +70,13 @@ public class MapsFragment extends Fragment {
     private SearchView searchView;
     private FusedLocationProviderClient fusedLocationClient;
     private Activity activity;
+    MapLayoutBinding binding;
+    Marker dstMarker, srcMarker;
+    int directingState = 0;
+
+    ApiService service = Client.createService(ApiService.class);
+    private ArrayList<Polyline> routes = null;
+
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
 
         /**
@@ -107,8 +142,22 @@ public class MapsFragment extends Fragment {
         curMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(@NonNull LatLng latLng) {
-                MarkerDialog markerDialog = new MarkerDialog(curMap, latLng);
-                markerDialog.show(getActivity().getSupportFragmentManager(), "MarkerCreate Dialog");
+                switch (directingState) {
+                    case 0:
+                        MarkerDialog markerDialog = new MarkerDialog(curMap, latLng);
+                        markerDialog.show(getActivity().getSupportFragmentManager(), "MarkerCreate Dialog");
+                        break;
+                    case 1:
+                        srcMarker = curMap.addMarker(new MarkerOptions().position(latLng));
+                        directingState = 2;
+                        binding.navTooltip.setText("Nhấn giữ một điểm khác trên bản đồ để chọn đích đến");
+                        break;
+                    case 2:
+                        dstMarker = curMap.addMarker(new MarkerOptions().position(latLng));
+                        drawRoutes();
+                        fadeOut(binding.navTooltip);
+                        break;
+                }
             }
         });
         //marker click
@@ -116,7 +165,7 @@ public class MapsFragment extends Fragment {
             @Override
             public boolean onMarkerClick(@NonNull Marker marker) {
                 NoteDialog noteDialog = new NoteDialog(curMap, marker);
-                noteDialog.show(getActivity().getSupportFragmentManager(), "Note Dialog");
+                noteDialog.show(getActivity().getSupportFragmentManager(),"Note Dialog");
                 return false;
             }
         });
@@ -161,12 +210,140 @@ public class MapsFragment extends Fragment {
         setHasOptionsMenu(true);
     }
 
+
+    private void fadeIn(View view) {
+        if (view.getVisibility() != View.GONE)
+            return;
+        view.setAlpha(0f);
+        view.setVisibility(View.VISIBLE);
+        view.animate().alpha(1f).setInterpolator(new DecelerateInterpolator()).setDuration(500).setListener(null);
+    }
+
+    private void fadeOut(View view) {
+        if (view.getVisibility() != View.VISIBLE)
+            return;
+        view.animate()
+                .alpha(0f)
+                .setDuration(500)
+                .setInterpolator(new AccelerateInterpolator())
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        view.setVisibility(View.GONE);
+                    }
+                });
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.map_layout, container, false);
+
+        binding = MapLayoutBinding.inflate(inflater, container, false);
+        View view = binding.getRoot();
+
+        FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
+
+        fab.setImageResource(R.drawable.ic_directions);
+
+        fab.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        FloatingActionButton fab = (FloatingActionButton) (getActivity().findViewById(R.id.fab));
+                        if (directingState == 0) {
+
+                            binding.navTooltip.setText("Nhấn giữ một điểm trên bản đồ để chọn nơi bắt đầu");
+
+                            fab.setBackgroundTintList(AppCompatResources.getColorStateList(getContext(), R.color.red));
+                            fab.setImageResource(R.drawable.ic_close);
+                            fab.setColorFilter(ContextCompat.getColor(getContext(), R.color.white),
+                                    android.graphics.PorterDuff.Mode.SRC_IN);
+
+                            fadeIn(binding.navTooltip);
+                            directingState = 1;
+                        }
+                        else {
+                            fab.setBackgroundTintList(AppCompatResources.getColorStateList(getContext(), R.color.light_rose));
+                            fab.setImageResource(R.drawable.ic_directions);
+                            fadeOut(binding.navTooltip);
+                            removeRoutes();
+                        }
+                    }
+                });
+
+        return view;
+    }
+
+    private void removeRoutes() {
+        if (srcMarker != null) {
+            srcMarker.remove();
+            srcMarker = null;
+        }
+        if (dstMarker != null) {
+            dstMarker.remove();
+            dstMarker = null;
+        }
+        if (routes != null) {
+            for (Polyline polyline : routes) {
+                polyline.remove();
+            }
+            routes.clear();
+            routes = null;
+        }
+        directingState = 0;
+    }
+
+    private void drawRoutes() {
+
+        LatLng source, destination;
+        source = srcMarker.getPosition();
+        destination = dstMarker.getPosition();
+
+        Call<Direction> call = service.getDirection("driving",
+                source.longitude,
+                source.latitude,
+                destination.longitude,
+                destination.latitude,
+                "maxspeed",
+                "full",
+                "geojson",
+                getString(R.string.mapbox_access_token));
+        call.enqueue(new Callback<Direction>() {
+            @Override
+            public void onResponse(Call<Direction> call, Response<Direction> response) {
+                if (response.isSuccessful()) {
+                    Direction direction = response.body();
+
+                    routes = new ArrayList<>();
+
+                    for (int i=0; i<direction.routes.size(); ++i) {
+                        ArrayList<LatLng> points = new ArrayList<>();
+
+                        for (int j=0; j<direction.routes.get(i).geometry.coordinates.size(); ++j)
+                            points.add(new LatLng(
+                                    direction.routes.get(i).geometry.coordinates.get(j).get(1),
+                                    direction.routes.get(i).geometry.coordinates.get(j).get(0)));
+
+                        Polyline polyline = curMap.addPolyline(new PolylineOptions()
+                                .addAll(points)
+                                .color(Color.CYAN)
+                                .jointType(JointType.ROUND)
+                                .width(12));
+
+                        routes.add(polyline);
+                    }
+                }
+                else {
+                    Toast.makeText(getContext(), "Failed", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Direction> call, Throwable t) {
+                Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     @Override

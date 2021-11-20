@@ -33,6 +33,23 @@
         android:iconifiedByDefault="false"
         android:queryHint="Search..."
         android:theme="@style/Theme.Tripper" />
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="15dp"
+        android:layout_marginTop="10dp"
+        map:cardElevation="8dp"
+        android:layout_below="@id/search_location">
+        <TextView
+            android:id="@+id/navTooltip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginVertical="10dp"
+            android:textAlignment="center"
+            android:visibility="gone"
+            />
+    </androidx.cardview.widget.CardView>
 
 
 
