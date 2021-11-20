@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.triplet.tripper.MapsFragment;
 import com.triplet.tripper.databinding.ActivityMainBinding;
 
@@ -21,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
 
     ActivityMainBinding binding;
     int currentPosition = 0;
+    FirebaseAuth mAuth;
 
     private boolean loadFragment(Fragment fragment, int newPosition) {
         if(fragment != null) {
@@ -56,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
 
+        mAuth = FirebaseAuth.getInstance();
+
         View view = binding.getRoot();
         setContentView(view);
 
@@ -79,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
                     selectedFragment = null;
                     nextPosition = 1;
                 } else if (itemId == R.id.menu_profile) {
-                    selectedFragment = null;
+                    selectedFragment = new ProfileFragment();
                     nextPosition = 2;
                 } else if (itemId == R.id.menu_map) {
                     nextPosition = 0;

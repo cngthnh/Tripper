@@ -49,7 +49,7 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:src="@drawable/ic_facebook"
-            android:background="@android:color/transparent"/>
+            android:background="?attr/selectableItemBackgroundBorderless"/>
         <ImageButton
             android:id="@+id/googleSignIn"
             android:layout_width="40dp"
@@ -59,16 +59,6 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:src="@drawable/ic_google"
-            android:background="@android:color/transparent"/>
-        <ImageButton
-            android:id="@+id/githubSignIn"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:adjustViewBounds="true"
-            android:scaleType="fitCenter"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:src="@drawable/ic_github"
-            android:background="@android:color/transparent"/>
+            android:background="?attr/selectableItemBackgroundBorderless"/>
     </LinearLayout>
 </LinearLayout>
