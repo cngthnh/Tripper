@@ -1,39 +1,35 @@
 package com.triplet.tripper;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.SearchView;
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
-
 import android.Manifest;
-import android.app.Activity;
-import android.content.pm.PackageManager;
-import androidx.appcompat.content.res.AppCompatResources;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.app.Activity;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
-import android.view.animation.TranslateAnimation;
-import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 
 import com.arlib.floatingsearchview.FloatingSearchView;
 import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
@@ -43,21 +39,21 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.JointType;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnSuccessListener;
-
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.triplet.tripper.databinding.MapLayoutBinding;
 import com.triplet.tripper.models.map.Direction;
 import com.triplet.tripper.utils.ApiService;
 import com.triplet.tripper.utils.Client;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -152,6 +148,15 @@ public class MapsFragment extends Fragment {
         rlp.setMargins(0, 600, 0, 0);
     }
 
+    private BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId) {
+        Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorResId);
+        vectorDrawable.setBounds(0, 0, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
+        Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        vectorDrawable.draw(canvas);
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
+    }
+
     private void setCurrentMap() {
         curMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
@@ -162,12 +167,15 @@ public class MapsFragment extends Fragment {
                         markerDialog.show(getActivity().getSupportFragmentManager(), "MarkerCreate Dialog");
                         break;
                     case 1:
-                        srcMarker = curMap.addMarker(new MarkerOptions().position(latLng));
+                        srcMarker = curMap.addMarker(new MarkerOptions().position(latLng)
+                                .icon(bitmapDescriptorFromVector(getActivity(), R.drawable.ic_blue_flag)));
                         directingState = 2;
                         binding.navTooltip.setText("Nhấn giữ một điểm khác trên bản đồ để chọn đích đến");
                         break;
                     case 2:
-                        dstMarker = curMap.addMarker(new MarkerOptions().position(latLng));
+                        dstMarker = curMap.addMarker(new MarkerOptions().position(latLng)
+                                .icon(bitmapDescriptorFromVector(getActivity(), R.drawable.ic_red_flag)));
+                        directingState = 3;
                         drawRoutes();
                         fadeOut(binding.navTooltip);
                         break;
@@ -215,7 +223,8 @@ public class MapsFragment extends Fragment {
                     } else {
                         Address address = addressList.get(0);
                         LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
-                        curMap.addMarker(new MarkerOptions().position(latLng).title(address.getFeatureName()));
+                        curMap.addMarker(new MarkerOptions().position(latLng).title(address.getFeatureName())
+                            .icon(bitmapDescriptorFromVector(getActivity(), R.drawable.ic_red_marker)));
                         curMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
                     }
                 }
