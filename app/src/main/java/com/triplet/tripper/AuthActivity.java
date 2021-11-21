@@ -186,6 +186,7 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
                             createUserInfoIfNotExists(user);
 
                         } else {
+                            binding.progressBar.setVisibility(View.GONE);
                             Toast.makeText(AuthActivity.this, "Tài khoản đã được đăng ký hoặc thông tin đăng ký không hợp lệ", Toast.LENGTH_LONG).show();
                         }
                     }
@@ -366,6 +367,7 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
                     finish();
 
                 } else {
+                    binding.progressBar.setVisibility(View.GONE);
                     Toast.makeText(AuthActivity.this, "Thông tin đăng nhập không chính xác", Toast.LENGTH_LONG).show();
                 }
             }
