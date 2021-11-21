@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -66,9 +67,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         FloatingActionButton fab = getActivity().findViewById(R.id.fab);
         fab.setOnClickListener(this);
         fab.setImageResource(R.drawable.ic_animation);
+        fab.setBackgroundTintList(AppCompatResources.getColorStateList(getContext(), R.color.light_rose));
         binding.editAge.setOnClickListener(this);
         binding.editAddress.setOnClickListener(this);
         binding.editFavPlace.setOnClickListener(this);
+        binding.signOut.setOnClickListener(this);
     }
 
     private void getUserData() {
@@ -174,6 +177,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 binding.favPlace.requestFocus();
             }
 
+        }
+        else if (viewId == R.id.signOut) {
+            mAuth.signOut();
+            startActivity(new Intent(getActivity(), AuthActivity.class));
+            getActivity().finish();
         }
     }
 

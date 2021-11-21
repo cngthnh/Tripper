@@ -8,11 +8,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -40,6 +44,7 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.FirebaseDatabase;
 import com.triplet.tripper.databinding.ActivityAuthBinding;
 import com.triplet.tripper.databinding.AuthLayoutBinding;
@@ -66,11 +71,6 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
         View view = binding.getRoot();
 
         mAuth = FirebaseAuth.getInstance();
-        if (mAuth.getCurrentUser() != null) {
-            Intent intent = new Intent(AuthActivity.this, MainActivity.class);
-            startActivity(intent);
-            finish();
-        }
 
         mCallbackManager = CallbackManager.Factory.create();
         registerGoogleSignInResult();
@@ -126,6 +126,28 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
         authLayoutBinding.gotoSignUp.setOnClickListener(this);
         authLayoutBinding.fbSignIn.setOnClickListener(this);
         authLayoutBinding.googleSignIn.setOnClickListener(this);
+        fadeOut(binding.title);
+        binding.title.setText("Xin chào!");
+        fadeIn(binding.title);
+    }
+
+    private void fadeIn(View view) {
+        view.setAlpha(0f);
+        view.setVisibility(View.VISIBLE);
+        view.animate().alpha(1f).setInterpolator(new DecelerateInterpolator()).setDuration(500).setListener(null);
+    }
+
+    private void fadeOut(View view) {
+        view.animate()
+                .alpha(0f)
+                .setDuration(500)
+                .setInterpolator(new AccelerateInterpolator())
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        view.setVisibility(View.GONE);
+                    }
+                });
     }
 
     private void prepareSignUpLayout() {
@@ -133,6 +155,9 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
         SignupLayoutBinding signupLayoutBinding = SignupLayoutBinding.inflate(getLayoutInflater(), binding.authFrame, true);
         signupLayoutBinding.signUp.setOnClickListener(this);
         signupLayoutBinding.anotherAuth.setOnClickListener(this);
+        fadeOut(binding.title);
+        binding.title.setText("Đăng ký");
+        fadeIn(binding.title);
     }
 
     private void prepareSignInLayout() {
@@ -140,6 +165,9 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
         SigninLayoutBinding signinLayoutBinding = SigninLayoutBinding.inflate(getLayoutInflater(), binding.authFrame, true);
         signinLayoutBinding.signIn.setOnClickListener(this);
         signinLayoutBinding.anotherAuth.setOnClickListener(this);
+        fadeOut(binding.title);
+        binding.title.setText("Đăng nhập");
+        fadeIn(binding.title);
     }
 
     private void createUser() {
@@ -153,23 +181,10 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            User user = new User(name, email);
 
-                            FirebaseDatabase.getInstance().getReference("users")
-                                    .child(mAuth.getCurrentUser().getUid())
-                                    .setValue(user)
-                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if (task.isSuccessful()) {
-                                                Intent intent = new Intent(AuthActivity.this, MainActivity.class);
-                                                startActivity(intent);
-                                                finish();
-                                            } else {
-                                                Toast.makeText(AuthActivity.this, "Không thể tạo tài khoản", Toast.LENGTH_LONG).show();
-                                            }
-                                        }
-                                    });
+                            User user = new User(name, email);
+                            createUserInfoIfNotExists(user);
+
                         } else {
                             Toast.makeText(AuthActivity.this, "Tài khoản đã được đăng ký hoặc thông tin đăng ký không hợp lệ", Toast.LENGTH_LONG).show();
                         }
@@ -256,23 +271,7 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
                                     if (task.isSuccessful()) {
                                         FirebaseUser firebaseUser = mAuth.getCurrentUser();
                                         User user = new User(firebaseUser.getDisplayName(), firebaseUser.getEmail());
-
-                                        FirebaseDatabase.getInstance().getReference("users")
-                                                .child(mAuth.getCurrentUser().getUid())
-                                                .setValue(user)
-                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<Void> task) {
-                                                        if (task.isSuccessful()) {
-                                                            Intent intent = new Intent(AuthActivity.this, MainActivity.class);
-                                                            startActivity(intent);
-                                                            finish();
-                                                        } else {
-                                                            binding.progressBar.setVisibility(View.GONE);
-                                                            Toast.makeText(AuthActivity.this, "Không thể tạo tài khoản", Toast.LENGTH_LONG).show();
-                                                        }
-                                                    }
-                                                });
+                                        createUserInfoIfNotExists(user);
                                     }
                                     else {
                                         binding.progressBar.setVisibility(View.GONE);
@@ -284,6 +283,43 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
                         catch (ApiException e) {
                             binding.progressBar.setVisibility(View.GONE);
                             Toast.makeText(AuthActivity.this, "Có lỗi xảy ra khi đăng nhập với Google", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
+    private void createUserInfoIfNotExists(User user) {
+
+        FirebaseDatabase.getInstance().getReference("users")
+                .child(mAuth.getCurrentUser().getUid()).get()
+                .addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DataSnapshot> task) {
+                        if (task.getResult().getValue() != null) {
+                            Intent intent = new Intent(AuthActivity.this, MainActivity.class);
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            createUserInfo(user);
+                        }
+                    }
+                });
+    }
+
+    private void createUserInfo(User user) {
+        FirebaseDatabase.getInstance().getReference("users")
+                .child(mAuth.getCurrentUser().getUid())
+                .setValue(user)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Intent intent = new Intent(AuthActivity.this, MainActivity.class);
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            binding.progressBar.setVisibility(View.GONE);
+                            Toast.makeText(AuthActivity.this, "Không thể tạo tài khoản", Toast.LENGTH_LONG).show();
                         }
                     }
                 });
@@ -303,27 +339,9 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-
                             FirebaseUser firebaseUser = mAuth.getCurrentUser();
                             User user = new User(firebaseUser.getDisplayName(), firebaseUser.getEmail());
-
-                            FirebaseDatabase.getInstance().getReference("users")
-                                    .child(mAuth.getCurrentUser().getUid())
-                                    .setValue(user)
-                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if (task.isSuccessful()) {
-                                                Intent intent = new Intent(AuthActivity.this, MainActivity.class);
-                                                binding.progressBar.setVisibility(View.GONE);
-                                                startActivity(intent);
-                                                finish();
-                                            } else {
-                                                binding.progressBar.setVisibility(View.GONE);
-                                                Toast.makeText(AuthActivity.this, "Không thể tạo tài khoản", Toast.LENGTH_LONG).show();
-                                            }
-                                        }
-                                    });
+                            createUserInfoIfNotExists(user);
 
                         } else {
                             binding.progressBar.setVisibility(View.GONE);

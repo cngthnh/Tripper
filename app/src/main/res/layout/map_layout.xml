@@ -34,15 +34,15 @@
         app:floatingSearch_searchBarMarginTop="40dp"
         app:floatingSearch_searchHint="Search..."
         app:floatingSearch_showSearchKey="true"
-        app:floatingSearch_suggestionsListAnimDuration="250" />
+        app:floatingSearch_suggestionsListAnimDuration="250"
+        map:floatingSearch_backgroundColor="?boxBackgroundColor"/>
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="15dp"
-        android:layout_marginTop="10dp"
-        map:cardElevation="8dp"
-        android:layout_below="@id/search_location">
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="100dp"
+        map:cardElevation="8dp">
         <TextView
             android:id="@+id/navTooltip"
             android:layout_width="match_parent"
@@ -53,7 +53,6 @@
             android:visibility="gone"
             />
     </androidx.cardview.widget.CardView>
-
 
 
 </RelativeLayout>

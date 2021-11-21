@@ -6,6 +6,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -43,6 +44,7 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.JointType;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
@@ -88,6 +90,23 @@ public class MapsFragment extends Fragment {
         @Override
         public void onMapReady(GoogleMap googleMap) {
             curMap = googleMap;
+
+            int nightModeFlags =
+                    getContext().getResources().getConfiguration().uiMode &
+                            Configuration.UI_MODE_NIGHT_MASK;
+            switch (nightModeFlags) {
+                case Configuration.UI_MODE_NIGHT_YES:
+                    curMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(
+                            getContext(), R.raw.map_night_style));
+                    break;
+
+                case Configuration.UI_MODE_NIGHT_NO:
+
+                case Configuration.UI_MODE_NIGHT_UNDEFINED:
+                    curMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(
+                            getContext(), R.raw.map_light_style));
+                    break;
+            }
 
             searchView = getActivity().findViewById(R.id.search_location);
             curMap.setBuildingsEnabled(true);
@@ -242,16 +261,12 @@ public class MapsFragment extends Fragment {
 
 
     private void fadeIn(View view) {
-        if (view.getVisibility() != View.GONE)
-            return;
         view.setAlpha(0f);
         view.setVisibility(View.VISIBLE);
         view.animate().alpha(1f).setInterpolator(new DecelerateInterpolator()).setDuration(500).setListener(null);
     }
 
     private void fadeOut(View view) {
-        if (view.getVisibility() != View.VISIBLE)
-            return;
         view.animate()
                 .alpha(0f)
                 .setDuration(500)
@@ -287,8 +302,7 @@ public class MapsFragment extends Fragment {
 
                             fab.setBackgroundTintList(AppCompatResources.getColorStateList(getContext(), R.color.red));
                             fab.setImageResource(R.drawable.ic_close);
-                            fab.setColorFilter(ContextCompat.getColor(getContext(), R.color.white),
-                                    android.graphics.PorterDuff.Mode.SRC_IN);
+                            // fab.setColorFilter(ContextCompat.getColor(getContext(), R.color.white), android.graphics.PorterDuff.Mode.SRC_IN);
 
                             fadeIn(binding.navTooltip);
                             directingState = 1;

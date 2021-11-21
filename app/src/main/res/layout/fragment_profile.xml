@@ -17,7 +17,7 @@
         android:layout_marginBottom="15dp"
         android:fontFamily="@font/lato_black"
         android:text="@string/profile"
-        android:textColor="@color/black"
+        android:textColor="?titleTextColor"
         android:textSize="30dp"
         android:textStyle="bold" />
 
@@ -25,15 +25,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/profileTitle"
-        android:gravity="center"
+        android:gravity="top"
         android:orientation="vertical">
 
         <com.triplet.tripper.views.AnimationView
             android:id="@+id/animationView"
             android:layout_width="150dp"
             android:layout_height="150dp"
+            android:layout_marginBottom="15dp"
             auto:pattern="none"
-            android:layout_marginBottom="15dp"/>
+            android:layout_gravity="center_horizontal"/>
 
         <TextView
             android:id="@+id/name"
@@ -50,165 +51,191 @@
             android:layout_height="wrap_content"
             android:layout_margin="15dp"
             android:backgroundTint="@color/purple"
-            auto:cardElevation="8dp"
             android:orientation="vertical"
-            auto:cardCornerRadius="10dp">
+            auto:cardCornerRadius="10dp"
+            auto:cardElevation="8dp">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
+
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="10dp"/>
+                    android:layout_height="10dp" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                    android:layout_marginBottom="15dp"
                     android:gravity="center_vertical"
-                    android:layout_marginBottom="15dp">
+                    android:orientation="horizontal">
+
                     <ImageButton
                         android:id="@+id/editEmail"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:adjustViewBounds="true"
-                        android:scaleType="fitCenter"
                         android:layout_marginLeft="15dp"
                         android:layout_marginRight="5dp"
-                        android:src="@drawable/ic_block"
+                        android:adjustViewBounds="true"
+                        android:background="?attr/selectableItemBackgroundBorderless"
                         android:clickable="false"
-                        android:background="?attr/selectableItemBackgroundBorderless"/>
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_block" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/lato_italic"
-                        android:paddingRight="15dp"
                         android:paddingLeft="5dp"
+                        android:paddingRight="15dp"
                         android:text="Email"
-                        android:textColor="@color/white"
-                        android:textAlignment="gravity"/>
+                        android:textAlignment="gravity"
+                        android:textColor="@color/white" />
+
                     <EditText
                         android:id="@+id/email"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/lato_bold"
-                        android:paddingRight="15dp"
-                        android:paddingLeft="15dp"
-                        android:textColor="@color/white"
+                        android:background="@android:color/transparent"
                         android:focusable="false"
-                        android:background="@android:color/transparent"/>
+                        android:fontFamily="@font/lato_bold"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="15dp"
+                        android:textColor="@color/white" />
 
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="15dp">
+                    android:layout_marginBottom="15dp"
+                    android:orientation="horizontal">
+
                     <ImageButton
                         android:id="@+id/editAge"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:adjustViewBounds="true"
-                        android:scaleType="fitCenter"
                         android:layout_marginLeft="15dp"
                         android:layout_marginRight="5dp"
-                        android:src="@drawable/ic_edit"
-                        android:background="?attr/selectableItemBackgroundBorderless"/>
+                        android:adjustViewBounds="true"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_edit" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/lato_italic"
-                        android:paddingRight="15dp"
                         android:paddingLeft="5dp"
+                        android:paddingRight="15dp"
                         android:text="Tuổi"
                         android:textColor="@color/white" />
+
                     <EditText
                         android:id="@+id/age"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/lato_bold"
-                        android:paddingRight="15dp"
-                        android:paddingLeft="15dp"
-                        android:textColor="@color/white"
+                        android:background="@android:color/transparent"
                         android:focusable="false"
-                        android:background="@android:color/transparent"/>
+                        android:fontFamily="@font/lato_bold"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="15dp"
+                        android:textColor="@color/white" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="15dp">
+                    android:layout_marginBottom="15dp"
+                    android:orientation="horizontal">
+
                     <ImageButton
                         android:id="@+id/editAddress"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:adjustViewBounds="true"
-                        android:scaleType="fitCenter"
                         android:layout_marginLeft="15dp"
                         android:layout_marginRight="5dp"
-                        android:src="@drawable/ic_edit"
-                        android:background="?attr/selectableItemBackgroundBorderless"/>
+                        android:adjustViewBounds="true"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_edit" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/lato_italic"
-                        android:paddingRight="15dp"
                         android:paddingLeft="5dp"
+                        android:paddingRight="15dp"
                         android:text="Địa chỉ"
                         android:textColor="@color/white" />
+
                     <EditText
                         android:id="@+id/address"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/lato_bold"
-                        android:paddingRight="15dp"
-                        android:paddingLeft="15dp"
-                        android:textColor="@color/white"
+                        android:background="@android:color/transparent"
                         android:focusable="false"
-                        android:background="@android:color/transparent"/>
+                        android:fontFamily="@font/lato_bold"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="15dp"
+                        android:textColor="@color/white" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="15dp">
+                    android:layout_marginBottom="15dp"
+                    android:orientation="horizontal">
+
                     <ImageButton
                         android:id="@+id/editFavPlace"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:adjustViewBounds="true"
-                        android:scaleType="fitCenter"
                         android:layout_marginLeft="15dp"
                         android:layout_marginRight="5dp"
-                        android:src="@drawable/ic_edit"
-                        android:background="?attr/selectableItemBackgroundBorderless"/>
+                        android:adjustViewBounds="true"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_edit" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/lato_italic"
-                        android:paddingRight="15dp"
                         android:paddingLeft="5dp"
+                        android:paddingRight="15dp"
                         android:text="Địa điểm yêu thích"
                         android:textColor="@color/white" />
+
                     <EditText
                         android:id="@+id/favPlace"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/lato_bold"
-                        android:paddingRight="15dp"
-                        android:paddingLeft="15dp"
-                        android:textColor="@color/white"
+                        android:background="@android:color/transparent"
                         android:focusable="false"
-                        android:background="@android:color/transparent"/>
+                        android:fontFamily="@font/lato_bold"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="15dp"
+                        android:textColor="@color/white" />
                 </LinearLayout>
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <View android:layout_height="100dp"
-            android:layout_width="match_parent"/>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/signOut"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="20dp"
+            android:backgroundTint="?colorOnPrimary"
+            android:text="Đăng xuất"
+            android:textColor="@color/light_rose"
+            auto:rippleColor="@color/light_rose"
+            auto:strokeColor="@color/light_rose"
+            auto:strokeWidth="2dp" />
 
     </LinearLayout>
 
