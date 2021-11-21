@@ -42,6 +42,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.JointType;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
@@ -72,11 +73,13 @@ public class MapsFragment extends Fragment {
     MapLayoutBinding binding;
     Marker dstMarker, srcMarker;
     int directingState = 0;
+    Marker searching;
+
 
     ApiService service = Client.createService(ApiService.class);
     private ArrayList<Polyline> routes = null;
 
-    private OnMapReadyCallback callback = new OnMapReadyCallback() {
+    private final OnMapReadyCallback callback = new OnMapReadyCallback() {
 
         /**
          * Manipulates the map once available.
@@ -88,7 +91,7 @@ public class MapsFragment extends Fragment {
          * user has installed Google Play services and returned to the app.
          */
         @Override
-        public void onMapReady(GoogleMap googleMap) {
+        public void onMapReady(@NonNull GoogleMap googleMap) {
             curMap = googleMap;
 
             int nightModeFlags =
@@ -124,21 +127,23 @@ public class MapsFragment extends Fragment {
                         PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
                 onMapReady(curMap);
             }
-            curMap.setPadding(40, 40, 0, 250);
+            curMap.setPadding(dp2px(0), dp2px(200), 0, dp2px(100));
             curMap.setMyLocationEnabled(true);
             curMap.getUiSettings().setMapToolbarEnabled(true);
             curMap.getUiSettings().setZoomControlsEnabled(true);
             configureMyLocationButton();
             configureCompassButton();
             fusedLocationClient.getLastLocation()
-                    .addOnSuccessListener(activity, new OnSuccessListener<Location>() {
-                        @Override
-                        public void onSuccess(Location location) {
-                            // Got last known location. In some rare situations this can be null.
-                            if (location != null) {
-                                LatLng myPosition = new LatLng(location.getLatitude(),location.getLongitude());
-                                curMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myPosition, 15));
-                            }
+                    .addOnSuccessListener(activity, location -> {
+                        // Got last known location. In some rare situations this can be null.
+                        if (location != null) {
+                            LatLng myPosition = new LatLng(location.getLatitude(),location.getLongitude());
+                            CameraPosition cameraPosition = new CameraPosition.Builder()
+                                    .target(myPosition)
+                                    .zoom(17)
+                                    .tilt(30)
+                                    .build();
+                            curMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
                         }
                     });
         }
@@ -147,10 +152,7 @@ public class MapsFragment extends Fragment {
     private void configureCompassButton() {
         View compassButton = this.getView().findViewWithTag("GoogleMapCompass");
         RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) compassButton.getLayoutParams();
-        rlp.addRule(RelativeLayout.ALIGN_PARENT_END);
-        rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-        rlp.addRule(RelativeLayout.ALIGN_PARENT_START,0);
-        rlp.topMargin = 500;
+        rlp.leftMargin = dp2px(340);
     }
 
     @Override
@@ -162,9 +164,10 @@ public class MapsFragment extends Fragment {
     private void configureMyLocationButton() {
         View locationButton = ((View) activity.findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
         RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) locationButton.getLayoutParams();
-        rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 0);
-        rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
-        rlp.setMargins(0, 600, 0, 0);
+        rlp.topMargin = dp2px(200);
+    }
+    public int dp2px(float dp) {
+        return (int)(dp * getContext().getResources().getDisplayMetrics().density);
     }
 
     private BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId) {
@@ -177,38 +180,35 @@ public class MapsFragment extends Fragment {
     }
 
     private void setCurrentMap() {
-        curMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
-            @Override
-            public void onMapLongClick(@NonNull LatLng latLng) {
-                switch (directingState) {
-                    case 0:
-                        MarkerDialog markerDialog = new MarkerDialog(curMap, latLng);
-                        markerDialog.show(getActivity().getSupportFragmentManager(), "MarkerCreate Dialog");
-                        break;
-                    case 1:
-                        srcMarker = curMap.addMarker(new MarkerOptions().position(latLng)
-                                .icon(bitmapDescriptorFromVector(getActivity(), R.drawable.ic_blue_flag)));
-                        directingState = 2;
-                        binding.navTooltip.setText("Nhấn giữ một điểm khác trên bản đồ để chọn đích đến");
-                        break;
-                    case 2:
-                        dstMarker = curMap.addMarker(new MarkerOptions().position(latLng)
-                                .icon(bitmapDescriptorFromVector(getActivity(), R.drawable.ic_red_flag)));
-                        directingState = 3;
-                        drawRoutes();
-                        fadeOut(binding.navTooltip);
-                        break;
-                }
+        curMap.setOnMapLongClickListener(latLng -> {
+            switch (directingState) {
+                case 0:
+                    MarkerDialog markerDialog = new MarkerDialog(curMap, latLng);
+                    markerDialog.show(getActivity().getSupportFragmentManager(), "MarkerCreate Dialog");
+                    break;
+                case 1:
+                    srcMarker = curMap.addMarker(new MarkerOptions().position(latLng)
+                            .icon(bitmapDescriptorFromVector(getActivity(), R.drawable.ic_blue_flag)));
+                    directingState = 2;
+                    binding.navTooltip.setText("Nhấn giữ một điểm khác trên bản đồ để chọn đích đến");
+                    break;
+                case 2:
+                    dstMarker = curMap.addMarker(new MarkerOptions().position(latLng)
+                            .icon(bitmapDescriptorFromVector(getActivity(), R.drawable.ic_red_flag)));
+                    directingState = 3;
+                    drawRoutes();
+                    fadeOut(binding.navTooltip);
+                    break;
             }
         });
         //marker click
-        curMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(@NonNull Marker marker) {
-                NoteDialog noteDialog = new NoteDialog(curMap, marker);
-                noteDialog.show(getActivity().getSupportFragmentManager(),"Note Dialog");
-                return false;
-            }
+        curMap.setOnMarkerClickListener(marker -> {
+            float zoom = curMap.getCameraPosition().zoom;
+            curMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(),zoom+12.5f));
+            zoom = curMap.getCameraPosition().zoom;
+            NoteDialog noteDialog = new NoteDialog(curMap, marker);
+            noteDialog.show(getActivity().getSupportFragmentManager(),"Note Dialog");
+            return false;
         });
     }
 
@@ -216,7 +216,15 @@ public class MapsFragment extends Fragment {
         searchView.setOnQueryChangeListener(new FloatingSearchView.OnQueryChangeListener() {
             @Override
             public void onSearchTextChanged(String oldQuery, String newQuery) {
-
+                if (searching != null)
+                    searching.remove();
+            }
+        });
+        searchView.setOnClearSearchActionListener(new FloatingSearchView.OnClearSearchActionListener() {
+            @Override
+            public void onClearSearchClicked() {
+                if (searching != null)
+                    searching.remove();
             }
         });
         searchView.setOnSearchListener(new FloatingSearchView.OnSearchListener() {
@@ -227,6 +235,8 @@ public class MapsFragment extends Fragment {
 
             @Override
             public void onSearchAction(String currentQuery) {
+                if (searching != null)
+                    searching.remove();
                 String location = currentQuery;
                 List<Address> addressList = null;
                 if (location != null || !location.equals("")) {
@@ -242,7 +252,8 @@ public class MapsFragment extends Fragment {
                     } else {
                         Address address = addressList.get(0);
                         LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
-                        curMap.addMarker(new MarkerOptions().position(latLng).title(address.getFeatureName())
+                        searching =
+                        curMap.addMarker(new MarkerOptions().position(latLng).title(address.getAddressLine(0))
                             .icon(bitmapDescriptorFromVector(getActivity(), R.drawable.ic_red_marker)));
                         curMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
                     }
@@ -288,7 +299,7 @@ public class MapsFragment extends Fragment {
         binding = MapLayoutBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
 
-        FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
+        FloatingActionButton fab = getActivity().findViewById(R.id.fab);
 
         fab.setImageResource(R.drawable.ic_directions);
 
@@ -355,7 +366,7 @@ public class MapsFragment extends Fragment {
                 getString(R.string.mapbox_access_token));
         call.enqueue(new Callback<Direction>() {
             @Override
-            public void onResponse(Call<Direction> call, Response<Direction> response) {
+            public void onResponse(@NonNull Call<Direction> call, @NonNull Response<Direction> response) {
                 if (response.isSuccessful()) {
                     Direction direction = response.body();
 
@@ -384,7 +395,7 @@ public class MapsFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<Direction> call, Throwable t) {
+            public void onFailure(@NonNull Call<Direction> call, @NonNull Throwable t) {
                 Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
