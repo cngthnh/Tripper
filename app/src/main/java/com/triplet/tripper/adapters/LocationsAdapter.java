@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ramotion.foldingcell.FoldingCell;
 import com.triplet.tripper.R;
-import com.triplet.tripper.models.location.Location;
+import com.triplet.tripper.models.location.LocationRecord;
 
 import java.util.List;
 
@@ -19,13 +19,13 @@ import java.util.List;
 public class LocationsAdapter extends RecyclerView.Adapter<LocationsAdapter.LocationViewHolder>{
 
     private Context mcontext;
-    private List<Location> mListLocation;
+    private List<LocationRecord> mListLocation;
 
     public LocationsAdapter(Context mcontext) {
         this.mcontext = mcontext;
     }
 
-    public void setData(List<Location> mListLocation) {
+    public void setData(List<LocationRecord> mListLocation) {
         this.mListLocation = mListLocation;
         notifyDataSetChanged();
     }
@@ -40,11 +40,11 @@ public class LocationsAdapter extends RecyclerView.Adapter<LocationsAdapter.Loca
 
     @Override
     public void onBindViewHolder(@NonNull LocationViewHolder holder, int position) {
-        Location location = mListLocation.get(position);
+        LocationRecord location = mListLocation.get(position);
         if(location == null){
             return;
         }
-        holder.province.setText(location.getProvince());
+        holder.province.setText(location.getProvince().toString());
         holder.date.setText(location.getDate());
         holder.event.setText("Nội dung: " + location.getEvent());
         holder.location.setText("Địa điểm: " + location.getLocation());

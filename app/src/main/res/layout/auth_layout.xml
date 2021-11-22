@@ -6,19 +6,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Xin chào!"
-        android:textAlignment="center"
-        android:layout_margin="15dp"
-        android:fontFamily="@font/lato_bold"/>
     <com.google.android.material.button.MaterialButton
         android:id="@+id/gotoSignIn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
+        android:layout_marginTop="15dp"
         android:text="Đăng nhập"/>
     <com.google.android.material.button.MaterialButton
         android:id="@+id/gotoSignUp"
@@ -49,7 +43,7 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:src="@drawable/ic_facebook"
-            android:background="@android:color/transparent"/>
+            android:background="?attr/selectableItemBackgroundBorderless"/>
         <ImageButton
             android:id="@+id/googleSignIn"
             android:layout_width="40dp"
@@ -59,16 +53,6 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:src="@drawable/ic_google"
-            android:background="@android:color/transparent"/>
-        <ImageButton
-            android:id="@+id/githubSignIn"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:adjustViewBounds="true"
-            android:scaleType="fitCenter"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:src="@drawable/ic_github"
-            android:background="@android:color/transparent"/>
+            android:background="?attr/selectableItemBackgroundBorderless"/>
     </LinearLayout>
 </LinearLayout>

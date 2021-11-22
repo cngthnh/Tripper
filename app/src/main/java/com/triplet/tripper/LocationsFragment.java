@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.triplet.tripper.adapters.LocationsAdapter;
 import com.triplet.tripper.databinding.FragmentLocationsBinding;
-import com.triplet.tripper.models.location.Location;
+import com.triplet.tripper.models.location.LocationRecord;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,8 +45,8 @@ public class LocationsFragment extends Fragment {
     }
 
 
-    private List<Location> getDataLocations(){
-        List<Location> list = new ArrayList<>();
+    private List<LocationRecord> getDataLocations(){
+        List<LocationRecord> list = new ArrayList<>();
         //list.add(new Location("Quảng Nam", "01-01", "Tết dương lich", "Nhà", ""));
         //list.add(new Location("Hồ Chí Minh", "22-01", "Phượt Sài Gòn", "Quận 1", ""));
         //list.add(new Location("Đà nẵng", "09-02", "Đi cắm trại với bạn", "Làng Vân, Đèo Hải Vân",""));

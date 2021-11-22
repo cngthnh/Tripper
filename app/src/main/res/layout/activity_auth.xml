@@ -15,7 +15,7 @@
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:backgroundTint="@color/purple"
             android:layout_marginTop="-20dp"
             app:cardCornerRadius="20dp">
@@ -37,29 +37,63 @@
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_height="match_parent"
             android:layout_width="0dp"
-            android:layout_weight="10"
-            android:padding="8dp"
-            android:clipToPadding="false">
-            <androidx.cardview.widget.CardView
-                android:id="@+id/authFrame"
+            android:layout_weight="10">
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="10dp"
                 android:layout_gravity="center"
-                app:cardElevation="8dp"
-                android:animateLayoutChanges="true">
-                <ProgressBar
-                    android:id="@+id/progressBar"
-                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:padding="8dp"
+                android:clipToPadding="false">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/logo"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="15dp"
+                    app:cardCornerRadius="10dp">
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/ic_logo"
+                        android:padding="15dp"/>
+                </androidx.cardview.widget.CardView>
+
+                <TextView
+                    android:id="@+id/title"
                     android:layout_width="match_parent"
-                    android:layout_height="4dp"
-                    android:layout_gravity="bottom"
-                    android:layout_marginBottom="-2dp"
-                    android:indeterminate="true"
-                    android:indeterminateTint="@color/purple"
-                    android:scaleY="4"
-                    android:visibility="gone"/>
-            </androidx.cardview.widget.CardView>
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/logo"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:layout_marginBottom="15dp"
+                    android:fontFamily="@font/lato_black"
+                    android:textAlignment="center"
+                    android:textColor="@color/colored_title"
+                    android:textSize="25dp" />
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/authFrame"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="10dp"
+                    android:layout_gravity="center"
+                    app:cardElevation="7dp"
+                    android:animateLayoutChanges="true"
+                    android:layout_below="@id/title">
+                    <ProgressBar
+                        android:id="@+id/progressBar"
+                        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="4dp"
+                        android:layout_gravity="bottom"
+                        android:layout_marginBottom="-2dp"
+                        android:indeterminate="true"
+                        android:indeterminateTint="@color/purple"
+                        android:scaleY="4"
+                        android:visibility="gone"/>
+                </androidx.cardview.widget.CardView>
+            </RelativeLayout>
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
         <View
             android:layout_width="0dp"

@@ -2,6 +2,7 @@
 <resources>
     <declare-styleable name="AnimationView">
         <attr name="pattern" format="enum">
+            <enum name="none" value="-1"/>
             <enum name="star" value="0"/>
             <enum name="cat" value="1"/>
             <enum name="rocket" value="2"/>

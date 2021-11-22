@@ -11,6 +11,8 @@
     <color name="dark_blue">#4c5a81</color>
     <color name="light_rose">#f79b91</color>
     <color name="darker_gray">#202020</color>
+    <color name="red">#F44336</color>
+    <color name="colored_title">#DDD9FF</color>
     <color name="bgContentTop">#594691</color>
     <color name="bgBackSideColor">#f4f0ff</color>
     <color name="contentDividerLine">#e0e0e0</color>

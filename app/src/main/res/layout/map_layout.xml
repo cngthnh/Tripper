@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:map="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <fragment
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         map:cameraTargetLat="10.76304881668826"
         map:cameraTargetLng="106.68212338732872"
+        map:cameraTilt="40"
         map:cameraZoom="15"
         map:mapType="normal"
         map:uiCompass="true"
@@ -20,18 +22,37 @@
         map:uiZoomGestures="true"
         tools:context=".MapsFragment" />
 
-    <SearchView
+
+    <com.arlib.floatingsearchview.FloatingSearchView
         android:id="@+id/search_location"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:layout_alignParentTop="true"
-        android:layout_marginHorizontal="15dp"
-        android:layout_alignParentLeft="true"
-        android:background="@drawable/search_location_bar"
-        android:elevation="5dp"
-        android:iconifiedByDefault="false"
-        android:queryHint="Search..."
-        android:theme="@style/Theme.Tripper" />
+        app:floatingSearch_close_search_on_keyboard_dismiss="true"
+        app:floatingSearch_leftActionMode="showHamburger"
+        app:floatingSearch_searchBarMarginLeft="10dp"
+        app:floatingSearch_searchBarMarginRight="10dp"
+        app:floatingSearch_searchBarMarginTop="40dp"
+        app:floatingSearch_searchHint="Search..."
+        app:floatingSearch_showSearchKey="true"
+        app:floatingSearch_suggestionsListAnimDuration="250"
+        map:floatingSearch_backgroundColor="?boxBackgroundColor"/>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="100dp"
+        map:cardElevation="8dp">
+        <TextView
+            android:id="@+id/navTooltip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginVertical="10dp"
+            android:textAlignment="center"
+            android:visibility="gone"
+            />
+    </androidx.cardview.widget.CardView>
+
 
 </RelativeLayout>

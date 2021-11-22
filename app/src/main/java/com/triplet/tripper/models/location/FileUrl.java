@@ -1,21 +1,21 @@
 package com.triplet.tripper.models.location;
 
 public class FileUrl {
-    private String fileUrl;
+    private String url;
 
     public  FileUrl(){
 
     }
 
     public FileUrl(String fileUrl) {
-        this.fileUrl = fileUrl;
+        this.url = fileUrl;
     }
 
     public String getFileUrl() {
-        return fileUrl;
+        return url;
     }
 
     public void setFileUrl(String fileUrl) {
-        this.fileUrl = fileUrl;
+        this.url = fileUrl;
     }
 }

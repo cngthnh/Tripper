@@ -1,31 +1,37 @@
 package com.triplet.tripper.models.location;
 
-public class Location {
-    private String province;
+import com.google.android.gms.maps.model.LatLng;
+
+public class LocationRecord {
+    private LatLng province;
     private String date;
     private String event;
     private String location;
     private String content;
-    private FileUrl image;
-    private FileUrl video;
-    private FileUrl audio;
+    private String imageUrl;
+    private String videoUrl;
+    private String audioUrl;
 
-    public Location(String province, String date, String event, String location, String content, FileUrl image, FileUrl video, FileUrl audio) {
+    public LocationRecord(){
+
+    }
+
+    public LocationRecord(LatLng province, String date, String event, String location, String content, String imageUrl, String videoUrl, String audioUrl) {
         this.province = province;
         this.date = date;
         this.event = event;
         this.location = location;
         this.content = content;
-        this.image = image;
-        this.video = video;
-        this.audio = audio;
+        this.imageUrl = imageUrl;
+        this.videoUrl = videoUrl;
+        this.audioUrl = audioUrl;
     }
 
-    public String getProvince() {
+    public LatLng getProvince() {
         return province;
     }
 
-    public void setProvince(String province) {
+    public void setProvince(LatLng province) {
         this.province = province;
     }
 
@@ -61,27 +67,27 @@ public class Location {
         this.content = content;
     }
 
-    public FileUrl getImage() {
-        return image;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setImage(FileUrl image) {
-        this.image = image;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
-    public FileUrl getVideo() {
-        return video;
+    public String getVideoUrl() {
+        return videoUrl;
     }
 
-    public void setVideo(FileUrl video) {
-        this.video = video;
+    public void setVideoUrl(String videoUrl) {
+        this.videoUrl = videoUrl;
     }
 
-    public FileUrl getAudio() {
-        return audio;
+    public String getAudioUrl() {
+        return audioUrl;
     }
 
-    public void setAudio(FileUrl audio) {
-        this.audio = audio;
+    public void setAudioUrl(String audioUrl) {
+        this.audioUrl = audioUrl;
     }
 }

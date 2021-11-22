@@ -1,6 +1,8 @@
 package com.triplet.tripper;
 
 import android.animation.LayoutTransition;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -10,9 +12,12 @@ import android.view.Window;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.triplet.tripper.MapsFragment;
 import com.triplet.tripper.databinding.ActivityMainBinding;
 
@@ -21,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
 
     ActivityMainBinding binding;
     int currentPosition = 0;
+    FirebaseAuth mAuth;
 
     private boolean loadFragment(Fragment fragment, int newPosition) {
         if(fragment != null) {
@@ -51,10 +57,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getSupportActionBar().hide();
+        //requestWindowFeature(Window.FEATURE_NO_TITLE);
+        //getSupportActionBar().hide();
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
+
+        mAuth = FirebaseAuth.getInstance();
+
+        if (mAuth.getCurrentUser() == null) {
+            Intent intent = new Intent(MainActivity.this, AuthActivity.class);
+            startActivity(intent);
+            finish();
+        }
 
         View view = binding.getRoot();
         setContentView(view);
@@ -78,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
                     selectedFragment = new LocationsFragment();
                     nextPosition = 1;
                 } else if (itemId == R.id.menu_profile) {
-                    selectedFragment = null;
+                    selectedFragment = new ProfileFragment();
                     nextPosition = 2;
                 } else if (itemId == R.id.menu_map) {
                     nextPosition = 0;
@@ -91,6 +105,4 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-
-
 }

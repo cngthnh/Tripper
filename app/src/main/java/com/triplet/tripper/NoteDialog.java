@@ -21,7 +21,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDialogFragment;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
@@ -29,33 +28,36 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.triplet.tripper.adapters.WordNoteAdapter;
 import com.triplet.tripper.models.location.FileUrl;
-import com.triplet.tripper.models.location.Location;
-import com.triplet.tripper.models.map.WordNote;
+import com.triplet.tripper.models.location.LocationRecord;
 
-import java.util.ArrayList;
+import java.util.UUID;
 
 public class NoteDialog extends AppCompatDialogFragment {
     private GoogleMap map;
     private Marker marker;
-    private RecyclerView recyclerView;
-    private WordNoteAdapter wordNoteAdapter;
-    private ArrayList<WordNote> wordNoteList;
     private Uri imgUri, videoUri, audioUri;
     private FirebaseDatabase database;
     private DatabaseReference myRef;
     private FirebaseStorage storage;
     private StorageReference storageRef;
-    private FileUrl image;
-    private FileUrl video;
-    private FileUrl audio;
+    private String image;
+    private String video;
+    private String audio;
+    private String titleText;
+    private String dateText;
+    private String contentText;
+    private String locationText;
+    private String provinceText;
 
     EditText edtTitle;
     EditText edtContent;
@@ -131,17 +133,15 @@ public class NoteDialog extends AppCompatDialogFragment {
     }
 
     private void pickAudio() {
-        Intent imgIntent =  new Intent();
-        imgIntent.setAction(Intent.ACTION_GET_CONTENT);
-        imgIntent.setType("audio/*");
-        startActivityForResult(imgIntent, 3);
+        Intent audioIntent =  new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(audioIntent, 3);
     }
 
     private void pickVideo() {
-        Intent imgIntent =  new Intent();
-        imgIntent.setAction(Intent.ACTION_GET_CONTENT);
-        imgIntent.setType("video/*");
-        startActivityForResult(imgIntent, 2);
+        Intent videoIntent =  new Intent();
+        videoIntent.setAction(Intent.ACTION_GET_CONTENT);
+        videoIntent.setType("video/*");
+        startActivityForResult(videoIntent, 2);
     }
 
     private void pickImg() {
@@ -177,13 +177,41 @@ public class NoteDialog extends AppCompatDialogFragment {
 
 
     private void uploadData() {
-        String titleText = edtTitle.getText().toString();
-        String dateText = edtDate.getText().toString();
-        String contentText = edtContent.getText().toString();
-        String locationText = edtLocation.getText().toString();
+        titleText = edtTitle.getText().toString();
+        dateText = edtDate.getText().toString();
+        contentText = edtContent.getText().toString();
+        locationText = edtLocation.getText().toString();
 
+        FileUrl fileUrl = new FileUrl();
 
-        uploadDataFileToFireBase(imgUri, image);
+        FirebaseDatabase database1 = FirebaseDatabase.getInstance();
+        DatabaseReference dataRef1 = database1.getReference();
+
+        if(imgUri != null){
+            uploadDataFileToFireBase(imgUri);
+            dataRef1.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    FileUrl url = snapshot.getValue(FileUrl.class);
+                    if (url!=null){
+                        Log.e("Name", url.getFileUrl());
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
+        }
+        if(videoUri != null){
+            uploadDataFileToFireBase(videoUri);
+
+            //Log.e("Name", video);
+        }
+
 
 
         LatLng latLng = marker.getPosition();
@@ -191,9 +219,9 @@ public class NoteDialog extends AppCompatDialogFragment {
         String lng = String.valueOf(latLng.longitude);
         String id = (lat + "_" + lng).replace(".", "_") + "_" + dateText.replace("-", "_");
 
-        Location location = new Location(" ", dateText, titleText,locationText, contentText, image,null, null);
+        LocationRecord location = new LocationRecord(latLng, dateText, titleText, locationText, contentText, image, video, "");
 
-        myRef.child(id).setValue(location, new DatabaseReference.CompletionListener() {
+        myRef.child(FirebaseAuth.getInstance().getUid() + "/" + id ).setValue(location, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
                 Toast.makeText(getActivity(), "Set value success", Toast.LENGTH_SHORT).show();
@@ -201,27 +229,37 @@ public class NoteDialog extends AppCompatDialogFragment {
         });
     }
 
-    private void uploadDataFileToFireBase(Uri uri, FileUrl image) {
+    private void uploadDataFileToFireBase(Uri uri) {
 
-        StorageReference fileRef = FirebaseStorage.getInstance().getReference().child("1");
+        StorageReference fileRef;
+        UUID uuid = UUID.randomUUID();
+        Boolean check;
+        if(getFileExtension(uri) == "mp4"){
+            fileRef = storageRef.child(FirebaseAuth.getInstance().getUid() + "/video/" + System.currentTimeMillis() + uuid + "." + getFileExtension(uri));
+        }
+        else if(getFileExtension(uri) == "mp3")
+        {
+            fileRef = storageRef.child(FirebaseAuth.getInstance().getUid() + "/audio/" + System.currentTimeMillis() + uuid + "." + getFileExtension(uri));
+        }
+        else {
+            fileRef = storageRef.child(FirebaseAuth.getInstance().getUid() + "/image/" + System.currentTimeMillis() + uuid + "." + getFileExtension(uri));
+        }
         fileRef.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
-                        FileUrl fileUrl = new FileUrl(uri.toString());
-                        Log.e("Name", uri.toString());
+                        FirebaseDatabase database = FirebaseDatabase.getInstance();
+                        DatabaseReference dataRef = database.getReference("url");
+                        dataRef.setValue(uri.toString());
                     }
                 });
-
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Toast.makeText(getActivity(), "Uploading Failed !!", Toast.LENGTH_SHORT).show();
-                e.printStackTrace();
-                Log.e("Name", fileRef.toString());
             }
         });
     }
