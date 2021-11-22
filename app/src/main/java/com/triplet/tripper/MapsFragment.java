@@ -184,11 +184,15 @@ public class MapsFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()){
-                    LocationRecord locationRecord = dataSnapshot.getValue(LocationRecord.class);
-                    LatLng latLng = new LatLng(locationRecord.getLatitude(), locationRecord.getLongitude());
+                    try {
+                        LocationRecord locationRecord = dataSnapshot.getValue(LocationRecord.class);
+                        LatLng latLng = new LatLng(locationRecord.getLatitude(), locationRecord.getLongitude());
 
-                    curMap.addMarker(new MarkerOptions().position(latLng).title(" ")
-                            .icon(bitmapDescriptorFromVector(getActivity(), R.drawable.ic_purple_marker)));
+                        curMap.addMarker(new MarkerOptions().position(latLng).title(" ")
+                                .icon(bitmapDescriptorFromVector(getActivity(), R.drawable.ic_purple_marker)));
+                    } catch (Exception e) {
+                        continue;
+                    }
                 }
             }
 
@@ -232,9 +236,9 @@ public class MapsFragment extends Fragment {
         curMap.setOnMapLongClickListener(latLng -> {
             switch (directingState) {
                 case 0:
-                    curMap.addMarker(new MarkerOptions().position(latLng)
+                    Marker marker = curMap.addMarker(new MarkerOptions().position(latLng)
                             .icon(bitmapDescriptorFromVector(getActivity(), R.drawable.ic_purple_marker)));
-                    NoteDialog noteDialog = new NoteDialog(curMap, latLng);
+                    NoteDialog noteDialog = new NoteDialog(curMap, marker);
                     noteDialog.show(getActivity().getSupportFragmentManager(),"Note Dialog");
                     break;
                 case 1:
@@ -257,7 +261,7 @@ public class MapsFragment extends Fragment {
             float zoom = curMap.getCameraPosition().zoom;
             curMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(),zoom+12.5f));
             zoom = curMap.getCameraPosition().zoom;
-            NoteDialog noteDialog = new NoteDialog(curMap, marker.getPosition());
+            NoteDialog noteDialog = new NoteDialog(curMap, marker);
             noteDialog.show(getActivity().getSupportFragmentManager(),"Note Dialog");
             return false;
         });

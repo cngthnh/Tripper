@@ -78,9 +78,10 @@ public class NoteDialog extends AppCompatDialogFragment {
 
 
 
-    public NoteDialog(GoogleMap curMap, LatLng latLng) {
+    public NoteDialog(GoogleMap curMap, Marker marker) {
         map = curMap;
-        this.latLng = latLng;
+        this.marker = marker;
+        this.latLng = marker.getPosition();
     }
 
     public NoteDialog(LocationRecord locationRecord){
@@ -137,6 +138,7 @@ public class NoteDialog extends AppCompatDialogFragment {
         btCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                marker.remove();
                 dialog.dismiss();
             }
         });
