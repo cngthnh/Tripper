@@ -89,8 +89,8 @@ public class LocationsAdapter extends RecyclerView.Adapter<LocationsAdapter.Loca
         holder.location_bot.setText((location.getLocation()));
         holder.content_bot.setText(location.getContent());
         if(location.getImageUrl() != null){
-            if(!location.getImageUrl().getFileUrl().isEmpty()){
-                Glide.with(mContext).load(location.getImageUrl().getFileUrl()).into(holder.landscapeImg);
+            if(!location.getImageUrl().isEmpty()){
+                Glide.with(mcontext).load(location.getImageUrl()).into(holder.imageView);
             }
         }
 
@@ -111,10 +111,19 @@ public class LocationsAdapter extends RecyclerView.Adapter<LocationsAdapter.Loca
             }
         });
 
+        holder.video_bt_bot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(location.getVideoUrl()));
+                intent.setDataAndType(Uri.parse(location.getVideoUrl()), "video/mp4");
+                mcontext.startActivity(intent);
+            }
+        });
+
         holder.menuBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PopupMenu popupMenu = new PopupMenu(mContext, holder.menuBtn);
+                PopupMenu popupMenu = new PopupMenu(mcontext, holder.menuBtn);
                 popupMenu.getMenuInflater().inflate(R.menu.menu_popup, popupMenu.getMenu());
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
@@ -123,7 +132,7 @@ public class LocationsAdapter extends RecyclerView.Adapter<LocationsAdapter.Loca
                         switch (menuItem.getItemId()){
                             case R.id.menu_edit:
                                 NoteDialog noteDialog = new NoteDialog(location);
-                                noteDialog.show(((AppCompatActivity)mContext).getSupportFragmentManager(), "Note Dialog");
+                                noteDialog.show(((AppCompatActivity)mcontext).getSupportFragmentManager(), "Note Dialog");
                                 break;
                             case R.id.menu_delete:
                                 String id = (location.getLatitude().toString().replace(".", "-") + "_" + location.getLongitude().toString().replace(".", "-") + "_" + location.getDate());
@@ -132,6 +141,7 @@ public class LocationsAdapter extends RecyclerView.Adapter<LocationsAdapter.Loca
                                 dataRef.removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void unused) {
+                                        notifyDataSetChanged();
                                     }
                                 });
                                 break;
@@ -157,14 +167,14 @@ public class LocationsAdapter extends RecyclerView.Adapter<LocationsAdapter.Loca
                 intent.setType("image/*");
                 Intent chooser = Intent.createChooser(intent, "Chia sẻ kỷ niệm của bạn");
 
-                List<ResolveInfo> resInfoList = mContext.getPackageManager().queryIntentActivities(chooser, PackageManager.MATCH_DEFAULT_ONLY);
+                List<ResolveInfo> resInfoList = mcontext.getPackageManager().queryIntentActivities(chooser, PackageManager.MATCH_DEFAULT_ONLY);
 
                 for (ResolveInfo resolveInfo : resInfoList) {
                     String packageName = resolveInfo.activityInfo.packageName;
-                    mContext.grantUriPermission(packageName, uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    mcontext.grantUriPermission(packageName, uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 }
 
-                mContext.startActivity(chooser);
+                mcontext.startActivity(chooser);
             }
         });
     }
@@ -181,12 +191,12 @@ public class LocationsAdapter extends RecyclerView.Adapter<LocationsAdapter.Loca
     private Uri saveImageExternal(Bitmap image) {
         Uri uri = null;
         try {
-            File file = new File(mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "to-share.png");
+            File file = new File(mcontext.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "to-share.png");
             FileOutputStream stream = new FileOutputStream(file);
             image.compress(Bitmap.CompressFormat.PNG, 90, stream);
             stream.close();
             uri = FileProvider.getUriForFile(
-                    mContext,
+                    mcontext,
                     "com.triplet.tripper.provider",
                     file);
         } catch (Exception e) {
@@ -216,8 +226,8 @@ public class LocationsAdapter extends RecyclerView.Adapter<LocationsAdapter.Loca
         private TextView date_bot;
         private TextView content_bot;
         private ImageButton video_bt_bot;
+        private ImageView imageView;
         private ImageButton shareBtn;
-        private ImageView landscapeImg;
         private ImageButton menuBtn;
         private ImageButton pointTo;
 
@@ -234,9 +244,9 @@ public class LocationsAdapter extends RecyclerView.Adapter<LocationsAdapter.Loca
             date_bot = itemView.findViewById(R.id.date_bot);
             content_bot = itemView.findViewById(R.id.content_bot);
             video_bt_bot = itemView.findViewById(R.id.bt_video_bot);
+            imageView = itemView.findViewById(R.id.landscape_image);
             shareBtn = itemView.findViewById(R.id.shareBtn);
             menuBtn = itemView.findViewById(R.id.bt_menu);
-            landscapeImg = itemView.findViewById(R.id.landscape_image);
             pointTo = itemView.findViewById(R.id.bt_addr_bot);
         }
     }

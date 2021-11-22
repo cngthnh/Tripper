@@ -8,8 +8,8 @@ public class LocationRecord {
     private String event;
     private String location;
     private String content;
-    private FileUrl imageUrl;
-    private FileUrl videoUrl;
+    private String imageUrl;
+    private String videoUrl;
     private Double latitude;
     private Double longitude;
 
@@ -18,7 +18,7 @@ public class LocationRecord {
 
     }
 
-    public LocationRecord(String province, String date, String event, String location, String content, FileUrl imageUrl, FileUrl videoUrl, Double latitude, Double longitude) {
+    public LocationRecord(String province, String date, String event, String location, String content, String imageUrl, String videoUrl, Double latitude, Double longitude) {
         this.province = province;
         this.date = date;
         this.event = event;
@@ -70,19 +70,19 @@ public class LocationRecord {
         this.content = content;
     }
 
-    public FileUrl getImageUrl() {
+    public String getImageUrl() {
         return imageUrl;
     }
 
-    public void setImageUrl(FileUrl imageUrl) {
+    public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
 
-    public FileUrl getVideoUrl() {
+    public String getVideoUrl() {
         return videoUrl;
     }
 
-    public void setVideoUrl(FileUrl videoUrl) {
+    public void setVideoUrl(String videoUrl) {
         this.videoUrl = videoUrl;
     }
 

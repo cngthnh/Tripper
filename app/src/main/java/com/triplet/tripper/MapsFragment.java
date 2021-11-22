@@ -128,6 +128,7 @@ public class MapsFragment extends Fragment {
             configureSearchView();
             setCurrentMap();
 
+            markerAll();
 
             if (ActivityCompat.checkSelfPermission(activity,
                     Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
@@ -174,6 +175,28 @@ public class MapsFragment extends Fragment {
         }
     };
 
+
+    private void markerAll() {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference dataRef = database.getReference("history/" + FirebaseAuth.getInstance().getUid());
+
+        dataRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()){
+                    LocationRecord locationRecord = dataSnapshot.getValue(LocationRecord.class);
+                    LatLng latLng = new LatLng(locationRecord.getLatitude(), locationRecord.getLongitude());
+                    curMap.addMarker(new MarkerOptions().position(latLng).title(" ")
+                            .icon(bitmapDescriptorFromVector(getActivity(), R.drawable.ic_purple_marker)));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+    }
+
     private void configureCompassButton() {
         View compassButton = this.getView().findViewWithTag("GoogleMapCompass");
         RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) compassButton.getLayoutParams();
@@ -196,7 +219,7 @@ public class MapsFragment extends Fragment {
     }
 
     private BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId) {
-        Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorResId);
+        Drawable vectorDrawable = context.getDrawable(vectorResId);
         vectorDrawable.setBounds(0, 0, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
         Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);

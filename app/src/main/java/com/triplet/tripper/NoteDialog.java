@@ -53,8 +53,8 @@ public class NoteDialog extends AppCompatDialogFragment {
     private DatabaseReference myRef;
     private FirebaseStorage storage;
     private StorageReference storageRef;
-    private FileUrl image;
-    private FileUrl video;
+    private String image;
+    private String video;
     private String audio;
     private String titleText;
     private String dateText;
@@ -149,8 +149,12 @@ public class NoteDialog extends AppCompatDialogFragment {
         edtContent.setText(log.getContent());
         edtDate.setText(log.getDate());
         edtLocation.setText(log.getLocation());
-        if(!log.getImageUrl().getFileUrl().isEmpty()){
-            Glide.with(getActivity()).load(log.getImageUrl().getFileUrl()).into(imgView);
+        if(!log.getImageUrl().isEmpty()){
+            Glide.with(getActivity()).load(log.getImageUrl()).into(imgView);
+        }
+
+        if(!log.getVideoUrl().isEmpty()){
+
         }
     }
 
@@ -205,13 +209,13 @@ public class NoteDialog extends AppCompatDialogFragment {
             uploadDataFileToFireBase(imgUri, location);
         }
         else {
-            location.setImageUrl(new FileUrl(""));
+            location.setImageUrl("");
         }
         if(videoUri != null){
             uploadDataFileToFireBase(videoUri, location);
         }
         else {
-            location.setVideoUrl(new FileUrl(""));
+            location.setVideoUrl("");
         }
 
         String id = (lat.replace(".", "-") + "_" + lng.replace(".", "-") + "_" + location.getDate());
@@ -233,13 +237,12 @@ public class NoteDialog extends AppCompatDialogFragment {
                 String lng = String.valueOf(latLng.longitude);
                 if(type == "mp4")
                 {
-                    location.setVideoUrl((new FileUrl(uri.toString())));
+                    location.setVideoUrl(uri.toString());
                 }
                 else {
-                    location.setImageUrl (new FileUrl(uri.toString()));
+                    location.setImageUrl (uri.toString());
                 }
                 String id = (lat.replace(".", "-") + "_" + lng.replace(".", "-") + "_" + location.getDate());
-                Log.e("FIREBASE", id);
                 myRef.child(FirebaseAuth.getInstance().getUid()).child(id).setValue(location, new DatabaseReference.CompletionListener() {
                     @Override
                     public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {

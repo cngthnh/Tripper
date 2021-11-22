@@ -53,6 +53,7 @@ public class LocationsFragment extends Fragment {
         getListLocationFromRealtimeDatabase();
         locationsAdapter.setData(list);
         locationsAdapter.notifyDataSetChanged();
+        binding.recyclerView.setVisibility(View.VISIBLE);
         binding.recyclerView.setAdapter(locationsAdapter);
 
         return view;
