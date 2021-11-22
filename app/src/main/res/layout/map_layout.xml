@@ -34,7 +34,9 @@
         app:floatingSearch_searchBarMarginTop="40dp"
         app:floatingSearch_searchHint="Search..."
         app:floatingSearch_showSearchKey="true"
-        app:floatingSearch_showVoiceInput="true"
+        app:showAsAction="always"
+        app:floatingSearch_menu="@menu/search_location_menu"
+        app:floatingSearch_showMenuAction="true"
         app:floatingSearch_showMoveSuggestionUp="true"
         app:floatingSearch_suggestionsListAnimDuration="250"
         map:floatingSearch_backgroundColor="?boxBackgroundColor"/>

@@ -1,10 +1,13 @@
 package com.triplet.tripper;
 
+import static android.app.Activity.RESULT_OK;
+
 import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -16,11 +19,13 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
@@ -96,6 +101,7 @@ public class MapsFragment extends Fragment {
     private FloatingSearchView searchView;
     private FusedLocationProviderClient fusedLocationClient;
     private Activity activity;
+    private static final int SPEECH_REQUEST_CODE = 0;
     MapLayoutBinding binding;
     Marker dstMarker, srcMarker;
     int directingState = 0;
@@ -326,7 +332,31 @@ public class MapsFragment extends Fragment {
                 return;
             }
         });
+        searchView.setOnMenuItemClickListener(new FloatingSearchView.OnMenuItemClickListener() {
+            @Override
+            public void onActionMenuItemSelected(MenuItem item) {
+                startSpeechRecognizer();
+            }
+        });
 
+    }
+    private void startSpeechRecognizer() {
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        startActivityForResult(intent, SPEECH_REQUEST_CODE);
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode,
+                                 Intent data) {
+        if (requestCode == SPEECH_REQUEST_CODE && resultCode == RESULT_OK) {
+            List<String> results = data.getStringArrayListExtra(
+                    RecognizerIntent.EXTRA_RESULTS);
+            String spokenText = results.get(0);
+            searchView.setSearchText(spokenText);
+            searchView.setSearchFocused(true);
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -349,7 +379,6 @@ public class MapsFragment extends Fragment {
                         if (inc == 5)
                         {
                             ref.removeValue();
-                            ref.child("count").setValue(0);
                             inc = 0;
                         }
                         ref.child(mAuth.getUid()).child("count").setValue(inc+1);
