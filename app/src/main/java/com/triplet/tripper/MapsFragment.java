@@ -186,6 +186,7 @@ public class MapsFragment extends Fragment {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()){
                     LocationRecord locationRecord = dataSnapshot.getValue(LocationRecord.class);
                     LatLng latLng = new LatLng(locationRecord.getLatitude(), locationRecord.getLongitude());
+
                     curMap.addMarker(new MarkerOptions().position(latLng).title(" ")
                             .icon(bitmapDescriptorFromVector(getActivity(), R.drawable.ic_purple_marker)));
                 }
