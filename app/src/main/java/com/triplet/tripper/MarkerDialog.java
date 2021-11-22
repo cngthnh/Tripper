@@ -2,7 +2,6 @@ package com.triplet.tripper;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -11,19 +10,20 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentActivity;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class MarkerDialog extends AppCompatDialogFragment {
@@ -46,25 +46,34 @@ public class MarkerDialog extends AppCompatDialogFragment {
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_marker,null);
-        builder.setView(view)
-                .setTitle("Marker")
-                .setPositiveButton("Save", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String name = nameMarker.getText().toString();
-                        curMap.addMarker(new MarkerOptions().title(name).position(currentLatLng)
-                            .icon(bitmapDescriptorFromVector(getActivity(), R.drawable.ic_purple_marker)));
-                        //saveData(name, currentLatLng);
-                    }
-                })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
 
-                    }
-                });
-        nameMarker = (EditText) view.findViewById(R.id.text_marker);
-        return builder.create();
+        builder.setView(view);
+
+        AlertDialog dialog = builder.create();
+
+        nameMarker = (EditText) view.findViewById(R.id.makerName);
+
+        ((MaterialButton) view.findViewById(R.id.addMaker)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                String name = nameMarker.getText().toString();
+                if (name.length() < 1) {
+                    Toast.makeText(getContext(), "Bạn chưa nhập tên điểm đánh dấu", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                curMap.addMarker(new MarkerOptions().title(name).position(currentLatLng)
+                        .icon(bitmapDescriptorFromVector(getActivity(), R.drawable.ic_purple_marker)));
+            }
+        });
+
+        ((MaterialButton) view.findViewById(R.id.cancel)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        return dialog;
     }
 
     private BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId) {

@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -27,6 +28,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -63,10 +65,10 @@ public class NoteDialog extends AppCompatDialogFragment {
     EditText edtContent;
     EditText edtDate;
     EditText edtLocation;
-    Button btSave;
-    Button btImg;
-    Button btVideo;
-    Button btAudio;
+    MaterialButton btSave;
+    MaterialButton btImg;
+    MaterialButton btVideo;
+    MaterialButton btCancel;
     ImageView imgView;
     TextView nameVideo;
     TextView nameAudio;
@@ -84,14 +86,10 @@ public class NoteDialog extends AppCompatDialogFragment {
         //AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.dialog_note,null);
-        builder.setView(view)
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+        View view = inflater.inflate(R.layout.new_dialog_note,null);
+        builder.setView(view);
 
-                    }
-                });
+        AlertDialog dialog = builder.create();
 
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference("history");
@@ -115,13 +113,6 @@ public class NoteDialog extends AppCompatDialogFragment {
             }
         });
         
-        btAudio.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                pickAudio();
-            }
-        });
-        
         btSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -129,7 +120,14 @@ public class NoteDialog extends AppCompatDialogFragment {
             }
         });
 
-        return builder.create();
+        btCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+        return dialog;
     }
 
     private void pickAudio() {
@@ -377,7 +375,7 @@ public class NoteDialog extends AppCompatDialogFragment {
         btSave = view.findViewById(R.id.bt_save);
         btImg = view.findViewById(R.id.bt_add_img);
         btVideo = view.findViewById(R.id.bt_add_video);
-        btAudio = view.findViewById(R.id.bt_add_audio);
+        btCancel = view.findViewById(R.id.cancel);
         imgView = view.findViewById(R.id.img_view);
         nameVideo = view.findViewById(R.id.tv_name_video);
         nameAudio = view.findViewById(R.id.tv_name_audio);
