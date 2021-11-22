@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".LocationsFragment"
     android:paddingTop="30dp"
-    android:background="@color/lighter_gray">
+    android:background="?boxBackgroundColor">
 
     <TextView
         android:id="@+id/searchTitle"
@@ -18,7 +18,7 @@
         android:layout_marginBottom="5dp"
         android:fontFamily="@font/lato_black"
         android:text="@string/history"
-        android:textColor="@color/black"
+        android:textColor="?titleTextColor"
         android:textSize="30dp"
         android:textStyle="bold" />
 

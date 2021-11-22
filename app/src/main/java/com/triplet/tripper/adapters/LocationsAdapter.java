@@ -1,11 +1,13 @@
 package com.triplet.tripper.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
@@ -45,11 +47,14 @@ import java.util.List;
 
 public class LocationsAdapter extends RecyclerView.Adapter<LocationsAdapter.LocationViewHolder>{
 
-    private Context mcontext = null;
+    private Context mContext = null;
+    private Activity mActivity = null;
     private List<LocationRecord> mListLocation;
 
-    public LocationsAdapter(Context mcontext) {
-        this.mcontext = mcontext;
+
+    public LocationsAdapter(Context mContext, Activity mActivity) {
+        this.mContext = mContext;
+        this.mActivity = mActivity;
     }
 
     public void setData(List<LocationRecord> mListLocation) {
@@ -81,12 +86,15 @@ public class LocationsAdapter extends RecyclerView.Adapter<LocationsAdapter.Loca
         holder.content_bot.setText(location.getContent());
         if(location.getImageUrl() != null){
             if(!location.getImageUrl().getFileUrl().isEmpty()){
-                Glide.with(mcontext).load(location.getImageUrl().getFileUrl()).into(holder.imageView);
+                Glide.with(mContext).load(location.getImageUrl().getFileUrl()).into(holder.landscapeImg);
             }
         }
 
-
-
+        holder.pointTo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+            }
+        });
         holder.foldingCell.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -97,7 +105,7 @@ public class LocationsAdapter extends RecyclerView.Adapter<LocationsAdapter.Loca
         holder.menuBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PopupMenu popupMenu = new PopupMenu(mcontext, holder.menuBtn);
+                PopupMenu popupMenu = new PopupMenu(mContext, holder.menuBtn);
                 popupMenu.getMenuInflater().inflate(R.menu.menu_popup, popupMenu.getMenu());
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
@@ -106,7 +114,7 @@ public class LocationsAdapter extends RecyclerView.Adapter<LocationsAdapter.Loca
                         switch (menuItem.getItemId()){
                             case R.id.menu_edit:
                                 NoteDialog noteDialog = new NoteDialog(location);
-                                noteDialog.show(((AppCompatActivity)mcontext).getSupportFragmentManager(), "Note Dialog");
+                                noteDialog.show(((AppCompatActivity)mContext).getSupportFragmentManager(), "Note Dialog");
                                 break;
                             case R.id.menu_delete:
                                 String id = (location.getLatitude().toString().replace(".", "-") + "_" + location.getLongitude().toString().replace(".", "-") + "_" + location.getDate());
@@ -140,14 +148,14 @@ public class LocationsAdapter extends RecyclerView.Adapter<LocationsAdapter.Loca
                 intent.setType("image/*");
                 Intent chooser = Intent.createChooser(intent, "Chia sẻ kỷ niệm của bạn");
 
-                List<ResolveInfo> resInfoList = mcontext.getPackageManager().queryIntentActivities(chooser, PackageManager.MATCH_DEFAULT_ONLY);
+                List<ResolveInfo> resInfoList = mContext.getPackageManager().queryIntentActivities(chooser, PackageManager.MATCH_DEFAULT_ONLY);
 
                 for (ResolveInfo resolveInfo : resInfoList) {
                     String packageName = resolveInfo.activityInfo.packageName;
-                    mcontext.grantUriPermission(packageName, uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    mContext.grantUriPermission(packageName, uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 }
 
-                mcontext.startActivity(chooser);
+                mContext.startActivity(chooser);
             }
         });
     }
@@ -164,12 +172,12 @@ public class LocationsAdapter extends RecyclerView.Adapter<LocationsAdapter.Loca
     private Uri saveImageExternal(Bitmap image) {
         Uri uri = null;
         try {
-            File file = new File(mcontext.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "to-share.png");
+            File file = new File(mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "to-share.png");
             FileOutputStream stream = new FileOutputStream(file);
             image.compress(Bitmap.CompressFormat.PNG, 90, stream);
             stream.close();
             uri = FileProvider.getUriForFile(
-                    mcontext,
+                    mContext,
                     "com.triplet.tripper.provider",
                     file);
         } catch (Exception e) {
@@ -199,11 +207,10 @@ public class LocationsAdapter extends RecyclerView.Adapter<LocationsAdapter.Loca
         private TextView date_bot;
         private TextView content_bot;
         private ImageButton video_bt_bot;
-        private ImageButton location_bt_bot;
-        private ImageView imageView;
         private ImageButton shareBtn;
         private ImageView landscapeImg;
         private ImageButton menuBtn;
+        private ImageButton pointTo;
 
 
         public LocationViewHolder(@NonNull View itemView) {
@@ -218,10 +225,10 @@ public class LocationsAdapter extends RecyclerView.Adapter<LocationsAdapter.Loca
             date_bot = itemView.findViewById(R.id.date_bot);
             content_bot = itemView.findViewById(R.id.content_bot);
             video_bt_bot = itemView.findViewById(R.id.bt_video_bot);
-            location_bt_bot = itemView.findViewById(R.id.bt_addr_bot);
-            imageView = itemView.findViewById(R.id.landscape_image);
             shareBtn = itemView.findViewById(R.id.shareBtn);
             menuBtn = itemView.findViewById(R.id.bt_menu);
+            landscapeImg = itemView.findViewById(R.id.landscape_image);
+            pointTo = itemView.findViewById(R.id.bt_addr_bot);
         }
     }
 }

@@ -48,7 +48,7 @@ public class LocationsFragment extends Fragment {
         View view = binding.getRoot();
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         binding.recyclerView.setLayoutManager(layoutManager);
-        locationsAdapter = new LocationsAdapter(getContext());
+        locationsAdapter = new LocationsAdapter(getContext(), getActivity());
         list = new ArrayList<>();
         getListLocationFromRealtimeDatabase();
         locationsAdapter.setData(list);

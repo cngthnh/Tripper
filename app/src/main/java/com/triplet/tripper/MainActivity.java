@@ -23,7 +23,6 @@ import com.triplet.tripper.databinding.ActivityMainBinding;
 
 
 public class MainActivity extends AppCompatActivity {
-
     ActivityMainBinding binding;
     int currentPosition = 0;
     FirebaseAuth mAuth;

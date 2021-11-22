@@ -131,6 +131,7 @@ public class NoteDialog extends AppCompatDialogFragment {
             @Override
             public void onClick(View view) {
                 NoteDialog.this.uploadData();
+                dialog.dismiss();
             }
         });
 
