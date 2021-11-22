@@ -7,14 +7,15 @@
     tools:context=".LocationsFragment"
     android:paddingTop="30dp"
     android:background="#DCDCDC">
+
     <TextView
         android:id="@+id/searchTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="5dp"
         android:layout_marginEnd="15dp"
-        android:layout_marginBottom="15dp"
+        android:layout_marginBottom="5dp"
         android:fontFamily="@font/lato_black"
         android:text="@string/history"
         android:textColor="@color/black"

@@ -44,7 +44,7 @@ public class LocationsAdapter extends RecyclerView.Adapter<LocationsAdapter.Loca
         if(location == null){
             return;
         }
-        holder.province.setText("QUảng Nam");
+        holder.province.setText("Quảng Nam");
         holder.date.setText(location.getDate());
         holder.event.setText("Nội dung: " + location.getEvent());
         holder.location.setText("Địa điểm: " + location.getLocation());

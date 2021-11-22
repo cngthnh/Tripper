@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         folding-cell:animationDuration="1300"
         folding-cell:backSideColor="@color/bgBackSideColor"
-        folding-cell:additionalFlipsCount="2"
+        folding-cell:additionalFlipsCount="3"
         folding-cell:cameraHeight="30"
         >
 
@@ -39,12 +39,13 @@
                     android:paddingBottom="7dp"
                     android:paddingLeft="12dp"
                     android:paddingRight="12dp"
-                    android:paddingTop="7dp">
+                    android:paddingTop="7dp"
+                    android:weightSum="9">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        android:layout_weight="4"
                         android:paddingTop="2dp"
 
                         >
@@ -59,6 +60,7 @@
                     </LinearLayout>
 
                     <TextView
+                        android:id="@+id/event_bot"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Event"
@@ -71,7 +73,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        android:layout_weight="4"
                         android:gravity="right"
                         android:text="#1"
                         android:textColor="@android:color/white"
@@ -94,51 +96,168 @@
                     android:orientation="vertical"
                     >
 
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="18dp">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textSize="13dp"
+                                android:textColor="@color/light_gray"
+                                android:fontFamily="@font/lato_black"
+                                android:layout_marginBottom="5dp"
+                                android:text="Địa điểm"/>
+                            <TextView
+                                android:id="@+id/location_bot"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textSize="13dp"
+                                android:textColor="@color/light_gray"
+                                android:fontFamily="@font/lato_light"
+                                android:layout_marginBottom="10dp"
+                                android:text="Hội An, Quảng Nam"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textSize="13dp"
+                                android:textColor="@color/light_gray"
+                                android:fontFamily="@font/lato_black"
+                                android:layout_marginBottom="5dp"
+                                android:text="Thời gian"/>
+                            <TextView
+                                android:id="@+id/date_bot"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textSize="13dp"
+                                android:textColor="@color/light_gray"
+                                android:fontFamily="@font/lato_light"
+                                android:layout_marginBottom="10dp"
+                                android:text="20-11-2021"/>
+                        </LinearLayout>
+                    </LinearLayout>
+
+
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:layout_marginBottom="6dp"
+                        android:layout_marginTop="5dp"
+                        android:background="@color/contentDividerLine"/>
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Thông tin thêm"
-                        android:padding="30dp"
-                        android:gravity="center"/>
+                        android:text="Ghi chú:"
+                        android:fontFamily="@font/lato_black"
+                        android:textSize="15dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp"
+                        />
+                    <TextView
+                        android:id="@+id/content_bot"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="3dp"
+                        android:paddingBottom="3dp"
+                        android:text="@string/pattern"
+                        />
+
                     <ImageView
                         android:layout_width="match_parent"
                         android:layout_height="2dp"
                         android:layout_marginBottom="6dp"
                         android:layout_marginTop="9dp"
                         android:background="@color/contentDividerLine"/>
-                    <TextView
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Thông tin thêm"
-                        android:padding="30dp"
-                        android:gravity="center"/>
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="2dp"
-                        android:layout_marginBottom="6dp"
-                        android:layout_marginTop="9dp"
-                        android:background="@color/contentDividerLine"/>
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Thông tin thêm"
-                        android:padding="30dp"
-                        android:gravity="center"/>
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="10dp">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_weight="1">
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/light_gray"
+                                android:text="Video"
+                                android:fontFamily="@font/lato_light"
+                                android:textSize="15dp"
+                                android:gravity="center"/>
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center">
+                                <Button
+                                    android:id="@+id/bt_video_bot"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:scaleX="0.5"
+                                    android:scaleY="0.7"
+                                    android:background="@drawable/ic_baseline_video_library_24"
+                                    android:gravity="right"/>
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_weight="1">
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:layout_weight="1">
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="@color/light_gray"
+                                    android:text="Vị trí"
+                                    android:fontFamily="@font/lato_light"
+                                    android:textSize="15dp"
+                                    android:gravity="center"/>
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center">
+                                    <Button
+                                        android:id="@+id/bt_addr_bot"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:scaleX="0.5"
+                                        android:scaleY="0.7"
+                                        android:background="@drawable/ic_baseline_location_on_24"
+                                        android:gravity="center_vertical"/>
+                                </LinearLayout>
+
+                            </LinearLayout>
+                        </LinearLayout>
+
+                    </LinearLayout>
                 </LinearLayout>
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="20dp"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginBottom="30dp"
-                    android:text="XEM BẢN ĐỒ"
-                    android:textSize="20dp"
-                    android:textColor="@color/white"
-                    android:fontFamily="@font/lato_black"
-                    android:padding="12dp"
-                    android:gravity="center"
-                    android:background="@color/light_rose"/>
+
             </LinearLayout>
 
         </FrameLayout>
