@@ -313,7 +313,7 @@ public class MapsFragment extends Fragment {
                         return;
                     }
                     if (addressList.size() == 0) {
-                        Toast.makeText(getContext(), location + " not found!!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(), "Không tìm thấy " + location, Toast.LENGTH_LONG).show();
                     } else {
                         Address address = addressList.get(0);
                         LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
@@ -340,7 +340,12 @@ public class MapsFragment extends Fragment {
                         Log.e("firebase", "Error getting data", task.getException());
                     }
                     else {
-                        int inc = task.getResult().getValue(Integer.class);
+                        int inc;
+                        try {
+                            inc = task.getResult().getValue(Integer.class);
+                        } catch (Exception e) {
+                            inc = 0;
+                        }
                         if (inc == 5)
                         {
                             ref.removeValue();
@@ -365,7 +370,13 @@ public class MapsFragment extends Fragment {
                         Log.e("firebase", "Error getting data", task.getException());
                     }
                     else {
-                        int inc = task.getResult().child("count").getValue(Integer.class);
+                        int inc;
+                        try {
+                            inc = task.getResult().child("count").getValue(Integer.class);
+                        }
+                        catch (Exception e) {
+                            inc = 0;
+                        }
                         for (int i = inc;i>=1;i--){
                             searchList.add(new RecentSearch(task.getResult().child(String.valueOf(i)).getValue(String.class)));
                         }
