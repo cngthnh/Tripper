@@ -1,5 +1,7 @@
 package com.triplet.tripper.models.location;
 
+import com.google.android.gms.maps.model.LatLng;
+
 public class LocationRecord {
     private String province;
     private String date;
@@ -8,13 +10,15 @@ public class LocationRecord {
     private String content;
     private FileUrl imageUrl;
     private FileUrl videoUrl;
-    private FileUrl audioUrl;
+    private Double latitude;
+    private Double longitude;
+
 
     public LocationRecord(){
 
     }
 
-    public LocationRecord(String province, String date, String event, String location, String content, FileUrl imageUrl, FileUrl videoUrl, FileUrl audioUrl) {
+    public LocationRecord(String province, String date, String event, String location, String content, FileUrl imageUrl, FileUrl videoUrl, Double latitude, Double longitude) {
         this.province = province;
         this.date = date;
         this.event = event;
@@ -22,7 +26,8 @@ public class LocationRecord {
         this.content = content;
         this.imageUrl = imageUrl;
         this.videoUrl = videoUrl;
-        this.audioUrl = audioUrl;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     public String getProvince() {
@@ -81,11 +86,19 @@ public class LocationRecord {
         this.videoUrl = videoUrl;
     }
 
-    public FileUrl getAudioUrl() {
-        return audioUrl;
+    public Double getLatitude() {
+        return latitude;
     }
 
-    public void setAudioUrl(FileUrl audioUrl) {
-        this.audioUrl = audioUrl;
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
     }
 }

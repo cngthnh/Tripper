@@ -23,6 +23,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -60,6 +61,9 @@ public class NoteDialog extends AppCompatDialogFragment {
     private String contentText;
     private String locationText;
     private String provinceText;
+    private LocationRecord log;
+    LatLng latLng;
+
 
     EditText edtTitle;
     EditText edtContent;
@@ -71,12 +75,18 @@ public class NoteDialog extends AppCompatDialogFragment {
     MaterialButton btCancel;
     ImageView imgView;
     TextView nameVideo;
-    TextView nameAudio;
+
 
 
     public NoteDialog(GoogleMap curMap, Marker marker) {
         map = curMap;
         this.marker = marker;
+        latLng = marker.getPosition();
+    }
+
+    public NoteDialog(LocationRecord locationRecord){
+        this.log = locationRecord;
+        latLng = new LatLng(locationRecord.getLatitude(), locationRecord.getLongitude());
     }
 
     @NonNull
@@ -98,6 +108,10 @@ public class NoteDialog extends AppCompatDialogFragment {
         storageRef = storage.getReference();
 
         findView(view);
+
+        if (log != null) {
+            setView();
+        }
 
         btImg.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -130,10 +144,16 @@ public class NoteDialog extends AppCompatDialogFragment {
         return dialog;
     }
 
-    private void pickAudio() {
-        Intent audioIntent =  new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(audioIntent, 3);
+    private void setView() {
+        edtTitle.setText(log.getEvent());
+        edtContent.setText(log.getContent());
+        edtDate.setText(log.getDate());
+        edtLocation.setText(log.getLocation());
+        if(!log.getImageUrl().getFileUrl().isEmpty()){
+            Glide.with(getActivity()).load(log.getImageUrl().getFileUrl()).into(imgView);
+        }
     }
+
 
     private void pickVideo() {
         Intent videoIntent =  new Intent();
@@ -162,12 +182,6 @@ public class NoteDialog extends AppCompatDialogFragment {
                 videoUri = data.getData();
                 nameVideo.setText(data.getData().getPath());
             }
-            else if(requestCode == 3)
-            {
-                audioUri = data.getData();
-                nameAudio.setText(data.getData().getPath());
-
-            }
         }
 
     }
@@ -180,12 +194,12 @@ public class NoteDialog extends AppCompatDialogFragment {
         String locationText = edtLocation.getText().toString();
 
 
-        LatLng latLng = marker.getPosition();
+
         String lat = String.valueOf(latLng.latitude);
         String lng = String.valueOf(latLng.longitude);
 
 
-        LocationRecord location = new LocationRecord(" ", dateText, titleText,locationText, contentText, image,video, null);
+        LocationRecord location = new LocationRecord(" ", dateText, titleText,locationText, contentText, image,video, latLng.latitude, latLng.longitude);
 
         if(imgUri != null){
             uploadDataFileToFireBase(imgUri, location);
@@ -199,13 +213,6 @@ public class NoteDialog extends AppCompatDialogFragment {
         else {
             location.setVideoUrl(new FileUrl(""));
         }
-        if(audioUri != null){
-            uploadDataFileToFireBase(audioUri, location);
-        }
-        else {
-            location.setAudioUrl(new FileUrl(""));
-        }
-
 
         String id = (lat.replace(".", "-") + "_" + lng.replace(".", "-") + "_" + location.getDate());
         myRef.child(FirebaseAuth.getInstance().getUid()).child(id).setValue(location, new DatabaseReference.CompletionListener() {
@@ -222,16 +229,11 @@ public class NoteDialog extends AppCompatDialogFragment {
         fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
-                LatLng latLng = marker.getPosition();
                 String lat = String.valueOf(latLng.latitude);
                 String lng = String.valueOf(latLng.longitude);
                 if(type == "mp4")
                 {
                     location.setVideoUrl((new FileUrl(uri.toString())));
-                }
-                else if(type == "mp3")
-                {
-                    location.setAudioUrl((new FileUrl(uri.toString())));
                 }
                 else {
                     location.setImageUrl (new FileUrl(uri.toString()));
@@ -277,95 +279,7 @@ public class NoteDialog extends AppCompatDialogFragment {
         return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
     }
 
-    /*
-    private void uploadData() {
-        titleText = edtTitle.getText().toString();
-        dateText = edtDate.getText().toString();
-        contentText = edtContent.getText().toString();
-        locationText = edtLocation.getText().toString();
 
-        FileUrl fileUrl = new FileUrl();
-
-        FirebaseDatabase database1 = FirebaseDatabase.getInstance();
-        DatabaseReference dataRef1 = database1.getReference("url");
-
-        if(imgUri != null){
-            uploadDataFileToFireBase(imgUri);
-            dataRef1.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    String url = snapshot.getValue(String.class);
-                    image = url;
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
-
-        }
-        if(videoUri != null){
-            uploadDataFileToFireBase(videoUri);
-
-            //Log.e("Name", video);
-        }
-
-
-
-        LatLng latLng = marker.getPosition();
-        String lat = String.valueOf(latLng.latitude);
-        String lng = String.valueOf(latLng.longitude);
-        String id = (lat + "_" + lng).replace(".", "_") + "_" + dateText.replace("-", "_");
-
-        LocationRecord location = new LocationRecord(latLng, dateText, titleText, locationText, contentText, image, video, "");
-
-        myRef.child(FirebaseAuth.getInstance().getUid() + "/" + id ).setValue(location, new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
-                Toast.makeText(getActivity(), "Set value success", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    private void uploadDataFileToFireBase(Uri uri) {
-
-        StorageReference fileRef;
-        UUID uuid = UUID.randomUUID();
-        Boolean check;
-        if(getFileExtension(uri) == "mp4"){
-            fileRef = storageRef.child(FirebaseAuth.getInstance().getUid() + "/video/" + System.currentTimeMillis() + uuid + "." + getFileExtension(uri));
-        }
-        else if(getFileExtension(uri) == "mp3")
-        {
-            fileRef = storageRef.child(FirebaseAuth.getInstance().getUid() + "/audio/" + System.currentTimeMillis() + uuid + "." + getFileExtension(uri));
-        }
-        else {
-            fileRef = storageRef.child(FirebaseAuth.getInstance().getUid() + "/image/" + System.currentTimeMillis() + uuid + "." + getFileExtension(uri));
-        }
-        fileRef.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        FirebaseDatabase database = FirebaseDatabase.getInstance();
-                        DatabaseReference dataRef = database.getReference("url");
-                        dataRef.setValue(uri.toString());
-                    }
-                });
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getActivity(), "Uploading Failed !!", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-
-
-     */
 
     private void findView(View view) {
         edtTitle = view.findViewById(R.id.edt_title);
@@ -378,6 +292,5 @@ public class NoteDialog extends AppCompatDialogFragment {
         btCancel = view.findViewById(R.id.cancel);
         imgView = view.findViewById(R.id.img_view);
         nameVideo = view.findViewById(R.id.tv_name_video);
-        nameAudio = view.findViewById(R.id.tv_name_audio);
     }
 }

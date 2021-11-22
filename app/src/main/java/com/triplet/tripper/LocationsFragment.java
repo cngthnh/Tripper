@@ -1,6 +1,7 @@
 package com.triplet.tripper;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -27,6 +29,7 @@ public class LocationsFragment extends Fragment {
     FragmentLocationsBinding binding;
     LocationsAdapter locationsAdapter = null;
     List<LocationRecord> list;
+    LatLng latLng;
 
     public LocationsFragment() {
         // Required empty public constructor
@@ -49,8 +52,9 @@ public class LocationsFragment extends Fragment {
         list = new ArrayList<>();
         getListLocationFromRealtimeDatabase();
         locationsAdapter.setData(list);
-
+        locationsAdapter.notifyDataSetChanged();
         binding.recyclerView.setAdapter(locationsAdapter);
+
         return view;
     }
 
@@ -62,8 +66,7 @@ public class LocationsFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()){
-                    LocationRecord locationRecord = dataSnapshot.getValue(LocationRecord.class);
-                    list.add(locationRecord);
+                    getSnapshot(dataSnapshot);
                 }
                 locationsAdapter.notifyDataSetChanged();
             }
@@ -73,6 +76,11 @@ public class LocationsFragment extends Fragment {
 
             }
         });
+    }
+
+    private void getSnapshot(DataSnapshot dataSnapshot) {
+        LocationRecord locationRecord = dataSnapshot.getValue(LocationRecord.class);
+        list.add(locationRecord);
     }
 
 }

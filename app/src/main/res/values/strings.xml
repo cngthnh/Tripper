@@ -2,6 +2,8 @@
     <string name="app_name">Tripper</string>
     <string name="map">Bản đồ</string>
     <string name="history">Lịch sử</string>
+    <string name="edit">Sửa sự kiện</string>
+    <string name="delete">Xoá sự kiện</string>
     <string name="profile">Trang cá nhân</string>
     <string name="invalid_email">Email không hợp lệ</string>
     <string name="invalid_password">Mật khẩu không hợp lệ</string>
