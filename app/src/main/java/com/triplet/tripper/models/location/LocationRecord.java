@@ -1,22 +1,20 @@
 package com.triplet.tripper.models.location;
 
-import com.google.android.gms.maps.model.LatLng;
-
 public class LocationRecord {
-    private LatLng province;
+    private String province;
     private String date;
     private String event;
     private String location;
     private String content;
-    private String imageUrl;
-    private String videoUrl;
-    private String audioUrl;
+    private FileUrl imageUrl;
+    private FileUrl videoUrl;
+    private FileUrl audioUrl;
 
     public LocationRecord(){
 
     }
 
-    public LocationRecord(LatLng province, String date, String event, String location, String content, String imageUrl, String videoUrl, String audioUrl) {
+    public LocationRecord(String province, String date, String event, String location, String content, FileUrl imageUrl, FileUrl videoUrl, FileUrl audioUrl) {
         this.province = province;
         this.date = date;
         this.event = event;
@@ -27,11 +25,11 @@ public class LocationRecord {
         this.audioUrl = audioUrl;
     }
 
-    public LatLng getProvince() {
+    public String getProvince() {
         return province;
     }
 
-    public void setProvince(LatLng province) {
+    public void setProvince(String province) {
         this.province = province;
     }
 
@@ -67,27 +65,27 @@ public class LocationRecord {
         this.content = content;
     }
 
-    public String getImageUrl() {
+    public FileUrl getImageUrl() {
         return imageUrl;
     }
 
-    public void setImageUrl(String imageUrl) {
+    public void setImageUrl(FileUrl imageUrl) {
         this.imageUrl = imageUrl;
     }
 
-    public String getVideoUrl() {
+    public FileUrl getVideoUrl() {
         return videoUrl;
     }
 
-    public void setVideoUrl(String videoUrl) {
+    public void setVideoUrl(FileUrl videoUrl) {
         this.videoUrl = videoUrl;
     }
 
-    public String getAudioUrl() {
+    public FileUrl getAudioUrl() {
         return audioUrl;
     }
 
-    public void setAudioUrl(String audioUrl) {
+    public void setAudioUrl(FileUrl audioUrl) {
         this.audioUrl = audioUrl;
     }
 }

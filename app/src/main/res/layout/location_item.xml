@@ -28,7 +28,7 @@
             android:visibility="gone">
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="380dp"
+                android:layout_height="wrap_content"
                 android:orientation="vertical">
 
                 <LinearLayout
@@ -49,11 +49,12 @@
 
                         >
                         <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
                             android:src="@drawable/menu_icon"
                             android:scaleY="0.8"
                             android:scaleX="0.8"
+
                             android:gravity="center_vertical"/>
                     </LinearLayout>
 
@@ -111,6 +112,18 @@
                         android:text="Thông tin thêm"
                         android:padding="30dp"
                         android:gravity="center"/>
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:layout_marginBottom="6dp"
+                        android:layout_marginTop="9dp"
+                        android:background="@color/contentDividerLine"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Thông tin thêm"
+                        android:padding="30dp"
+                        android:gravity="center"/>
                 </LinearLayout>
 
                 <TextView
@@ -118,6 +131,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="20dp"
                     android:layout_marginLeft="20dp"
+                    android:layout_marginBottom="30dp"
                     android:text="XEM BẢN ĐỒ"
                     android:textSize="20dp"
                     android:textColor="@color/white"
@@ -133,6 +147,7 @@
             android:id="@+id/cell_title_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:visibility="visible"
             >
             <LinearLayout
                 android:id="@+id/layout_title"

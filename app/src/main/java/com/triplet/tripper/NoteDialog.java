@@ -50,8 +50,8 @@ public class NoteDialog extends AppCompatDialogFragment {
     private DatabaseReference myRef;
     private FirebaseStorage storage;
     private StorageReference storageRef;
-    private String image;
-    private String video;
+    private FileUrl image;
+    private FileUrl video;
     private String audio;
     private String titleText;
     private String dateText;
@@ -175,7 +175,111 @@ public class NoteDialog extends AppCompatDialogFragment {
     }
 
 
+    private void uploadData() {
+        String titleText = edtTitle.getText().toString();
+        String dateText = edtDate.getText().toString();
+        String contentText = edtContent.getText().toString();
+        String locationText = edtLocation.getText().toString();
 
+
+        LatLng latLng = marker.getPosition();
+        String lat = String.valueOf(latLng.latitude);
+        String lng = String.valueOf(latLng.longitude);
+
+
+        LocationRecord location = new LocationRecord(" ", dateText, titleText,locationText, contentText, image,video, null);
+
+        if(imgUri != null){
+            uploadDataFileToFireBase(imgUri, location);
+        }
+        else {
+            location.setImageUrl(new FileUrl(""));
+        }
+        if(videoUri != null){
+            uploadDataFileToFireBase(videoUri, location);
+        }
+        else {
+            location.setVideoUrl(new FileUrl(""));
+        }
+        if(audioUri != null){
+            uploadDataFileToFireBase(audioUri, location);
+        }
+        else {
+            location.setAudioUrl(new FileUrl(""));
+        }
+
+
+        String id = (lat.replace(".", "-") + "_" + lng.replace(".", "-") + "_" + location.getDate());
+        myRef.child(FirebaseAuth.getInstance().getUid()).child(id).setValue(location, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                Toast.makeText(getActivity(), "Set value success", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void saveLocation(LocationRecord location, String fileUUID, String type) {
+        StorageReference fileRef = FirebaseStorage.getInstance().getReference().child(FirebaseAuth.getInstance().getUid())
+                .child(fileUUID);
+        fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                LatLng latLng = marker.getPosition();
+                String lat = String.valueOf(latLng.latitude);
+                String lng = String.valueOf(latLng.longitude);
+                if(type == "mp4")
+                {
+                    location.setVideoUrl((new FileUrl(uri.toString())));
+                }
+                else if(type == "mp3")
+                {
+                    location.setAudioUrl((new FileUrl(uri.toString())));
+                }
+                else {
+                    location.setImageUrl (new FileUrl(uri.toString()));
+                }
+                String id = (lat.replace(".", "-") + "_" + lng.replace(".", "-") + "_" + location.getDate());
+                Log.e("FIREBASE", id);
+                myRef.child(FirebaseAuth.getInstance().getUid()).child(id).setValue(location, new DatabaseReference.CompletionListener() {
+                    @Override
+                    public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                    }
+                });
+            }
+        });
+    }
+
+    private void uploadDataFileToFireBase(Uri uri, LocationRecord location) {
+
+        String fileUUID = String.valueOf(UUID.randomUUID());
+        String type = getFileExtension(uri);
+
+        StorageReference fileRef = FirebaseStorage.getInstance().getReference().child(FirebaseAuth.getInstance().getUid())
+                .child(fileUUID);
+        fileRef.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                saveLocation(location, fileUUID, type);
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getActivity(), "Uploading Failed !!", Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
+                Log.e("Name", fileRef.toString());
+            }
+        });
+    }
+
+    private String getFileExtension(Uri uri) {
+        ContentResolver contentResolver = getActivity().getContentResolver();
+        MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
+        return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
+    }
+
+    /*
     private void uploadData() {
         titleText = edtTitle.getText().toString();
         dateText = edtDate.getText().toString();
@@ -185,18 +289,15 @@ public class NoteDialog extends AppCompatDialogFragment {
         FileUrl fileUrl = new FileUrl();
 
         FirebaseDatabase database1 = FirebaseDatabase.getInstance();
-        DatabaseReference dataRef1 = database1.getReference();
+        DatabaseReference dataRef1 = database1.getReference("url");
 
         if(imgUri != null){
             uploadDataFileToFireBase(imgUri);
             dataRef1.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    FileUrl url = snapshot.getValue(FileUrl.class);
-                    if (url!=null){
-                        Log.e("Name", url.getFileUrl());
-                    }
-
+                    String url = snapshot.getValue(String.class);
+                    image = url;
                 }
 
                 @Override
@@ -264,11 +365,9 @@ public class NoteDialog extends AppCompatDialogFragment {
         });
     }
 
-    private String getFileExtension(Uri uri) {
-        ContentResolver contentResolver = getActivity().getContentResolver();
-        MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
-        return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
-    }
+
+
+     */
 
     private void findView(View view) {
         edtTitle = view.findViewById(R.id.edt_title);

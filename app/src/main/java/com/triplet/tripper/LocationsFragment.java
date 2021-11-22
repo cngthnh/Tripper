@@ -5,9 +5,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.triplet.tripper.adapters.LocationsAdapter;
 import com.triplet.tripper.databinding.FragmentLocationsBinding;
 import com.triplet.tripper.models.location.LocationRecord;
@@ -19,7 +26,7 @@ public class LocationsFragment extends Fragment {
 
     FragmentLocationsBinding binding;
     LocationsAdapter locationsAdapter = null;
-
+    List<LocationRecord> list;
 
     public LocationsFragment() {
         // Required empty public constructor
@@ -39,20 +46,35 @@ public class LocationsFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         binding.recyclerView.setLayoutManager(layoutManager);
         locationsAdapter = new LocationsAdapter(getActivity());
-        locationsAdapter.setData(getDataLocations());
+        list = new ArrayList<>();
+        getListLocationFromRealtimeDatabase();
+        locationsAdapter.setData(list);
+
         binding.recyclerView.setAdapter(locationsAdapter);
         return view;
     }
 
+    private void getListLocationFromRealtimeDatabase() {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference dataRef = database.getReference("history/" + FirebaseAuth.getInstance().getUid());
 
-    private List<LocationRecord> getDataLocations(){
-        List<LocationRecord> list = new ArrayList<>();
-        //list.add(new Location("Quảng Nam", "01-01", "Tết dương lich", "Nhà", ""));
-        //list.add(new Location("Hồ Chí Minh", "22-01", "Phượt Sài Gòn", "Quận 1", ""));
-        //list.add(new Location("Đà nẵng", "09-02", "Đi cắm trại với bạn", "Làng Vân, Đèo Hải Vân",""));
-        //list.add(new Location("Hồ Chí Minh", "22-02", "Phượt Sài Gòn", "Quận 1, Quận 2",""));
-        return  list;
+        dataRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()){
+                    LocationRecord locationRecord = dataSnapshot.getValue(LocationRecord.class);
+                    list.add(locationRecord);
+                }
+                locationsAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
+
 }
 
 

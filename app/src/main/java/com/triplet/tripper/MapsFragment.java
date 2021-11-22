@@ -125,6 +125,10 @@ public class MapsFragment extends Fragment {
             configureSearchView();
             setCurrentMap();
 
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference dataRef = database.getReference("history" + "/" + FirebaseAuth.getInstance().getUid());
+
+
 
             if (ActivityCompat.checkSelfPermission(activity,
                     Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
