@@ -66,6 +66,7 @@ public class LocationsFragment extends Fragment {
         dataRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                list.clear();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()){
                     getSnapshot(dataSnapshot);
                 }

@@ -40,7 +40,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.triplet.tripper.models.location.FileUrl;
 import com.triplet.tripper.models.location.LocationRecord;
 
 import java.util.UUID;
@@ -96,7 +95,7 @@ public class NoteDialog extends AppCompatDialogFragment {
         //AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.new_dialog_note,null);
+        View view = inflater.inflate(R.layout.dialog_note,null);
         builder.setView(view);
 
         AlertDialog dialog = builder.create();
@@ -138,7 +137,7 @@ public class NoteDialog extends AppCompatDialogFragment {
         btCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                marker.remove();
+                if (marker != null) marker.remove();
                 dialog.dismiss();
             }
         });
