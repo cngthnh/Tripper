@@ -14,7 +14,10 @@ import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,18 +25,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
 import com.arlib.floatingsearchview.FloatingSearchView;
+import com.arlib.floatingsearchview.suggestions.SearchSuggestionsAdapter;
 import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
+import com.arlib.floatingsearchview.util.Util;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -50,15 +59,32 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.appcheck.FirebaseAppCheck;
+import com.google.firebase.appcheck.safetynet.SafetyNetAppCheckProviderFactory;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.triplet.tripper.databinding.MapLayoutBinding;
+import com.triplet.tripper.models.User;
 import com.triplet.tripper.models.map.Direction;
 import com.triplet.tripper.utils.ApiService;
 import com.triplet.tripper.utils.Client;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -74,7 +100,9 @@ public class MapsFragment extends Fragment {
     Marker dstMarker, srcMarker;
     int directingState = 0;
     Marker searching;
-
+    FirebaseAuth mAuth;
+    FirebaseDatabase mDatabase;
+    List<RecentSearch> searchList;
 
     ApiService service = Client.createService(ApiService.class);
     private ArrayList<Polyline> routes = null;
@@ -90,9 +118,12 @@ public class MapsFragment extends Fragment {
          * install it inside the SupportMapFragment. This method will only be triggered once the
          * user has installed Google Play services and returned to the app.
          */
+        @RequiresApi(api = Build.VERSION_CODES.N)
         @Override
         public void onMapReady(@NonNull GoogleMap googleMap) {
             curMap = googleMap;
+
+
 
             int nightModeFlags =
                     getContext().getResources().getConfiguration().uiMode &
@@ -211,8 +242,38 @@ public class MapsFragment extends Fragment {
             return false;
         });
     }
+    public List<RecentSearch> removeDuplicates(List<RecentSearch> recentSearches) {
+        List<RecentSearch> list = new ArrayList<>();
+        int count = 0;
+        for (int i = 0; i<recentSearches.size();i++) {
+            for (int j = 0; j<list.size();j++){
+                if (list.get(j).word.equals(recentSearches.get(i).word))
+                    count++;
+            }
+            if (count == 0)
+                list.add(recentSearches.get(i));
+            count = 0;
+        }
+        return list;
+    }
 
     private void configureSearchView() {
+        searchView.setOnFocusChangeListener(new FloatingSearchView.OnFocusChangeListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            @Override
+            public void onFocus() {
+                Collections.reverse(searchList);
+                List<RecentSearch> list = removeDuplicates(searchList);
+                if (list.size()>=5)
+                    list.remove(0);
+                searchView.swapSuggestions(list);
+            }
+
+            @Override
+            public void onFocusCleared() {
+
+            }
+        });
         searchView.setOnQueryChangeListener(new FloatingSearchView.OnQueryChangeListener() {
             @Override
             public void onSearchTextChanged(String oldQuery, String newQuery) {
@@ -220,6 +281,7 @@ public class MapsFragment extends Fragment {
                     searching.remove();
             }
         });
+
         searchView.setOnClearSearchActionListener(new FloatingSearchView.OnClearSearchActionListener() {
             @Override
             public void onClearSearchClicked() {
@@ -233,11 +295,14 @@ public class MapsFragment extends Fragment {
 
             }
 
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onSearchAction(String currentQuery) {
                 if (searching != null)
                     searching.remove();
                 String location = currentQuery;
+                searchList.add(new RecentSearch(location));
+                addRecentSearch(location);
                 List<Address> addressList = null;
                 if (location != null || !location.equals("")) {
                     Geocoder geocoder = new Geocoder(getContext());
@@ -262,6 +327,52 @@ public class MapsFragment extends Fragment {
             }
         });
 
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private void addRecentSearch(String location) {
+        CompletableFuture<Void> future = CompletableFuture.runAsync(()->{
+            DatabaseReference ref = mDatabase.getReference("search");
+            ref.child(mAuth.getUid()).child("count").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DataSnapshot> task) {
+                    if (!task.isSuccessful()) {
+                        Log.e("firebase", "Error getting data", task.getException());
+                    }
+                    else {
+                        int inc = task.getResult().getValue(Integer.class);
+                        if (inc == 5)
+                        {
+                            ref.removeValue();
+                            ref.child("count").setValue(0);
+                            inc = 0;
+                        }
+                        ref.child(mAuth.getUid()).child("count").setValue(inc+1);
+                        ref.child(mAuth.getUid()).child(String.valueOf(inc+1)).setValue(location);
+                    }
+                }
+            });
+        });
+    }
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private void getRecentSearch() {
+        CompletableFuture<Void> future = CompletableFuture.runAsync(()->{
+            DatabaseReference ref = mDatabase.getReference("search");
+            ref.child(mAuth.getUid()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DataSnapshot> task) {
+                    if (!task.isSuccessful()) {
+                        Log.e("firebase", "Error getting data", task.getException());
+                    }
+                    else {
+                        int inc = task.getResult().child("count").getValue(Integer.class);
+                        for (int i = inc;i>=1;i--){
+                            searchList.add(new RecentSearch(task.getResult().child(String.valueOf(i)).getValue(String.class)));
+                        }
+                    }
+                }
+            });
+        });
     }
 
     @Override
@@ -290,6 +401,7 @@ public class MapsFragment extends Fragment {
                 });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -298,6 +410,10 @@ public class MapsFragment extends Fragment {
 
         binding = MapLayoutBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
+        mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance();
+        searchList = new ArrayList<>();
+        getRecentSearch();
 
         FloatingActionButton fab = getActivity().findViewById(R.id.fab);
 

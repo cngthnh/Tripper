@@ -28,12 +28,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:floatingSearch_close_search_on_keyboard_dismiss="true"
-        app:floatingSearch_leftActionMode="showHamburger"
+        app:floatingSearch_leftActionMode="showSearch"
         app:floatingSearch_searchBarMarginLeft="10dp"
         app:floatingSearch_searchBarMarginRight="10dp"
         app:floatingSearch_searchBarMarginTop="40dp"
         app:floatingSearch_searchHint="Search..."
         app:floatingSearch_showSearchKey="true"
+        app:floatingSearch_showVoiceInput="true"
+        app:floatingSearch_showMoveSuggestionUp="true"
         app:floatingSearch_suggestionsListAnimDuration="250"
         map:floatingSearch_backgroundColor="?boxBackgroundColor"/>
 
