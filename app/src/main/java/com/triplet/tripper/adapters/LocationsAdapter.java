@@ -28,13 +28,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.ramotion.foldingcell.FoldingCell;
+import com.triplet.tripper.MainActivity;
+import com.triplet.tripper.MapsFragment;
 import com.triplet.tripper.NoteDialog;
 import com.triplet.tripper.R;
 import com.triplet.tripper.models.location.LocationRecord;
+import com.triplet.tripper.views.PointHolderView;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -93,6 +97,11 @@ public class LocationsAdapter extends RecyclerView.Adapter<LocationsAdapter.Loca
         holder.pointTo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                PointHolderView pointHolderView = (PointHolderView) (mActivity.findViewById(R.id.point_holder));
+                pointHolderView.setLat(location.getLatitude());
+                pointHolderView.setLng(location.getLongitude());
+                ((BottomNavigationView) ((MainActivity) mActivity).findViewById(R.id.bottom_navigation))
+                        .setSelectedItemId(R.id.menu_map);
             }
         });
         holder.foldingCell.setOnClickListener(new View.OnClickListener() {

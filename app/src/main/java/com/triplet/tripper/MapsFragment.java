@@ -66,6 +66,7 @@ import com.triplet.tripper.models.location.LocationRecord;
 import com.triplet.tripper.models.map.Direction;
 import com.triplet.tripper.utils.ApiService;
 import com.triplet.tripper.utils.Client;
+import com.triplet.tripper.views.PointHolderView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -143,7 +144,21 @@ public class MapsFragment extends Fragment {
             curMap.getUiSettings().setZoomControlsEnabled(true);
             configureMyLocationButton();
             configureCompassButton();
-            fusedLocationClient.getLastLocation()
+
+            PointHolderView pointHolderView = (PointHolderView) (getActivity().findViewById(R.id.point_holder));
+
+            if (pointHolderView.getLat() != null && pointHolderView.getLng() != null) {
+                LatLng myPosition = new LatLng(pointHolderView.getLat(), pointHolderView.getLng());
+                pointHolderView.setLng(null);
+                pointHolderView.setLat(null);
+                CameraPosition cameraPosition = new CameraPosition.Builder()
+                        .target(myPosition)
+                        .zoom(17)
+                        .tilt(30)
+                        .build();
+                curMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+            }
+            else fusedLocationClient.getLastLocation()
                     .addOnSuccessListener(activity, location -> {
                         // Got last known location. In some rare situations this can be null.
                         if (location != null) {
@@ -193,8 +208,10 @@ public class MapsFragment extends Fragment {
         curMap.setOnMapLongClickListener(latLng -> {
             switch (directingState) {
                 case 0:
-                    MarkerDialog markerDialog = new MarkerDialog(curMap, latLng);
-                    markerDialog.show(getActivity().getSupportFragmentManager(), "MarkerCreate Dialog");
+                    curMap.addMarker(new MarkerOptions().position(latLng)
+                            .icon(bitmapDescriptorFromVector(getActivity(), R.drawable.ic_purple_marker)));
+                    NoteDialog noteDialog = new NoteDialog(curMap, latLng);
+                    noteDialog.show(getActivity().getSupportFragmentManager(),"Note Dialog");
                     break;
                 case 1:
                     srcMarker = curMap.addMarker(new MarkerOptions().position(latLng)
@@ -216,7 +233,7 @@ public class MapsFragment extends Fragment {
             float zoom = curMap.getCameraPosition().zoom;
             curMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(),zoom+12.5f));
             zoom = curMap.getCameraPosition().zoom;
-            NoteDialog noteDialog = new NoteDialog(curMap, marker);
+            NoteDialog noteDialog = new NoteDialog(curMap, marker.getPosition());
             noteDialog.show(getActivity().getSupportFragmentManager(),"Note Dialog");
             return false;
         });

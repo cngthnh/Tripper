@@ -78,10 +78,9 @@ public class NoteDialog extends AppCompatDialogFragment {
 
 
 
-    public NoteDialog(GoogleMap curMap, Marker marker) {
+    public NoteDialog(GoogleMap curMap, LatLng latLng) {
         map = curMap;
-        this.marker = marker;
-        latLng = marker.getPosition();
+        this.latLng = latLng;
     }
 
     public NoteDialog(LocationRecord locationRecord){
@@ -219,7 +218,7 @@ public class NoteDialog extends AppCompatDialogFragment {
         myRef.child(FirebaseAuth.getInstance().getUid()).child(id).setValue(location, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
-                Toast.makeText(getActivity(), "Set value success", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getContext(), "Set value success", Toast.LENGTH_SHORT).show();
             }
         });
     }
