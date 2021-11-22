@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".LocationsFragment"
     android:paddingTop="30dp"
-    android:background="#DCDCDC">
+    android:background="@color/lighter_gray">
 
     <TextView
         android:id="@+id/searchTitle"
@@ -21,26 +21,29 @@
         android:textColor="@color/black"
         android:textSize="30dp"
         android:textStyle="bold" />
-    <LinearLayout android:layout_height="match_parent"
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:orientation="vertical"
-        android:layout_below="@+id/searchTitle">
+        android:layout_height="match_parent"
+        android:layout_below="@+id/searchTitle"
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:orientation="horizontal"
-            android:elevation="8dp"
+            android:layout_margin="15dp"
             android:background="@drawable/bg_card"
-            android:layout_margin="15dp">
+            android:elevation="6dp"
+            android:orientation="horizontal">
+
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
                 android:hint="Nhập từ bạn muốn tra cứu"
-                android:textSize="15dp"
-                android:padding="15dp"/>
+                android:padding="15dp"
+                android:textSize="15dp" />
             />
         </LinearLayout>
 
@@ -49,8 +52,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:paddingBottom="70dp">
-        </androidx.recyclerview.widget.RecyclerView>
+            android:paddingBottom="70dp"></androidx.recyclerview.widget.RecyclerView>
 
     </LinearLayout>
 

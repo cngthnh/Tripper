@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:paddingTop="15dp"
     android:paddingLeft="15dp"
     android:paddingRight="15dp"
@@ -15,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         folding-cell:animationDuration="1300"
-        folding-cell:backSideColor="@color/bgBackSideColor"
+        folding-cell:backSideColor="@color/purple_var"
         folding-cell:additionalFlipsCount="3"
         folding-cell:cameraHeight="30"
         >
@@ -34,46 +35,46 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/bgContentTop"
+                    android:background="@color/purple_var"
                     android:orientation="horizontal"
                     android:paddingBottom="7dp"
                     android:paddingLeft="12dp"
                     android:paddingRight="12dp"
                     android:paddingTop="7dp"
-                    android:weightSum="9">
+                    android:weightSum="7">
 
                     <LinearLayout
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="4"
+                        android:layout_weight="2"
                         android:paddingTop="2dp"
-
                         >
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/menu_icon"
-                            android:scaleY="0.8"
-                            android:scaleX="0.8"
-
-                            android:gravity="center_vertical"/>
+                        <ImageButton
+                            android:id="@+id/shareBtn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/ic_share"
+                            android:scaleType="fitCenter"
+                            android:layout_gravity="start"
+                            app:tint="@color/white"
+                            android:background="?attr/selectableItemBackgroundBorderless"/>
                     </LinearLayout>
 
                     <TextView
                         android:id="@+id/event_bot"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="Event"
+                        android:text="Sự kiện"
                         android:fontFamily="@font/lato_bold"
                         android:gravity="center_horizontal"
-                        android:layout_weight="1"
+                        android:layout_weight="3"
                         android:textColor="@android:color/white"
                         android:textSize="22dp" />
 
                     <TextView
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="4"
+                        android:layout_weight="2"
                         android:gravity="right"
                         android:text="#1"
                         android:textColor="@android:color/white"
@@ -82,6 +83,7 @@
                 </LinearLayout>
 
                 <ImageView
+                    android:id="@+id/landscape_image"
                     android:layout_width="match_parent"
                     android:layout_height="100dp"
                     android:scaleType="centerCrop"
@@ -112,7 +114,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:textSize="13dp"
-                                android:textColor="@color/light_gray"
+                                android:textColor="@color/darker_gray"
                                 android:fontFamily="@font/lato_black"
                                 android:layout_marginBottom="5dp"
                                 android:text="Địa điểm"/>
@@ -121,8 +123,8 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:textSize="13dp"
-                                android:textColor="@color/light_gray"
-                                android:fontFamily="@font/lato_light"
+                                android:textColor="@color/darker_gray"
+                                android:fontFamily="@font/lato"
                                 android:layout_marginBottom="10dp"
                                 android:text="Hội An, Quảng Nam"/>
 
@@ -137,7 +139,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:textSize="13dp"
-                                android:textColor="@color/light_gray"
+                                android:textColor="@color/darker_gray"
                                 android:fontFamily="@font/lato_black"
                                 android:layout_marginBottom="5dp"
                                 android:text="Thời gian"/>
@@ -146,8 +148,8 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:textSize="13dp"
-                                android:textColor="@color/light_gray"
-                                android:fontFamily="@font/lato_light"
+                                android:textColor="@color/darker_gray"
+                                android:fontFamily="@font/lato"
                                 android:layout_marginBottom="10dp"
                                 android:text="20-11-2021"/>
                         </LinearLayout>
@@ -198,23 +200,25 @@
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:textColor="@color/light_gray"
+                                android:textColor="@color/purple_var"
                                 android:text="Video"
-                                android:fontFamily="@font/lato_light"
+                                android:fontFamily="@font/lato"
                                 android:textSize="15dp"
                                 android:gravity="center"/>
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:gravity="center">
-                                <Button
+                                <ImageButton
                                     android:id="@+id/bt_video_bot"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:scaleX="0.5"
-                                    android:scaleY="0.7"
-                                    android:background="@drawable/ic_baseline_video_library_24"
-                                    android:gravity="right"/>
+                                    android:layout_marginTop="5dp"
+                                    android:layout_width="40dp"
+                                    android:layout_height="40dp"
+                                    android:background="?attr/selectableItemBackgroundBorderless"
+                                    android:src="@drawable/ic_baseline_video_library_24"
+                                    android:gravity="right"
+                                    android:scaleType="fitCenter"
+                                    app:tint="@color/purple_var"/>
                             </LinearLayout>
 
                         </LinearLayout>
@@ -232,23 +236,25 @@
                                 <TextView
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:textColor="@color/light_gray"
+                                    android:textColor="@color/purple_var"
                                     android:text="Vị trí"
-                                    android:fontFamily="@font/lato_light"
+                                    android:fontFamily="@font/lato"
                                     android:textSize="15dp"
                                     android:gravity="center"/>
                                 <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:gravity="center">
-                                    <Button
+                                    <ImageButton
                                         android:id="@+id/bt_addr_bot"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:scaleX="0.5"
-                                        android:scaleY="0.7"
-                                        android:background="@drawable/ic_baseline_location_on_24"
-                                        android:gravity="center_vertical"/>
+                                        android:layout_marginTop="5dp"
+                                        android:layout_width="40dp"
+                                        android:layout_height="40dp"
+                                        android:scaleType="fitCenter"
+                                        android:background="?attr/selectableItemBackgroundBorderless"
+                                        android:src="@drawable/ic_baseline_location_on_24"
+                                        android:gravity="center_vertical"
+                                        app:tint="@color/purple_var"/>
                                 </LinearLayout>
 
                             </LinearLayout>
@@ -286,7 +292,7 @@
                         android:orientation="vertical"
                         android:padding="10dp"
                         android:gravity="center"
-                        android:background="@color/bgTitleLeft">
+                        android:background="@color/purple">
                         <TextView
                             android:id="@+id/province"
                             android:layout_width="match_parent"
@@ -355,7 +361,7 @@
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:fontFamily="@font/lato_light"
+                                android:fontFamily="@font/lato"
                                 android:text="Chưa biết"
                                 android:textColor="@color/light_gray"
                                 android:textSize="13dp" />
@@ -371,7 +377,7 @@
                                 android:layout_height="wrap_content"
                                 android:textColor="@color/light_gray"
                                 android:text="Chưa biết"
-                                android:fontFamily="@font/lato_light"
+                                android:fontFamily="@font/lato"
                                 android:textSize="13dp"/>
                         </LinearLayout>
 
@@ -385,7 +391,7 @@
                                 android:layout_height="wrap_content"
                                 android:textColor="@color/light_gray"
                                 android:text="Chưa biết"
-                                android:fontFamily="@font/lato_light"
+                                android:fontFamily="@font/lato"
                                 android:textSize="13dp"/>
                         </LinearLayout>
                     </LinearLayout>
