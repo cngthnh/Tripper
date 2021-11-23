@@ -79,8 +79,13 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
                 if (task.isSuccessful()) {
-                    currentUser = task.getResult().getValue(User.class);
-                    updateUI();
+                    try {
+                        currentUser = task.getResult().getValue(User.class);
+                        updateUI();
+                    } catch (Exception e) {
+                        Toast.makeText(getContext(), "Không thể lấy thông tin cá nhân", Toast.LENGTH_LONG).show();
+                        currentUser = new User();
+                    }
                 }
                 else {
                     Log.d("firebase", String.valueOf(task.getResult().getValue()));

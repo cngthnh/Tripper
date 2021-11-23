@@ -184,6 +184,7 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
 
                             User user = new User(name, email);
                             createUserInfoIfNotExists(user);
+                            Toast.makeText(AuthActivity.this, "Đăng ký tài khoản thành công", Toast.LENGTH_LONG).show();
 
                         } else {
                             binding.progressBar.setVisibility(View.GONE);
@@ -272,6 +273,7 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
                                     if (task.isSuccessful()) {
                                         FirebaseUser firebaseUser = mAuth.getCurrentUser();
                                         User user = new User(firebaseUser.getDisplayName(), firebaseUser.getEmail());
+                                        Toast.makeText(AuthActivity.this, "Xác thực với Google thành công", Toast.LENGTH_LONG).show();
                                         createUserInfoIfNotExists(user);
                                     }
                                     else {
@@ -320,7 +322,7 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
                             finish();
                         } else {
                             binding.progressBar.setVisibility(View.GONE);
-                            Toast.makeText(AuthActivity.this, "Không thể tạo tài khoản", Toast.LENGTH_LONG).show();
+                            Toast.makeText(AuthActivity.this, "Không thể thêm thông tin cá nhân vào tài khoản", Toast.LENGTH_LONG).show();
                         }
                     }
                 });
@@ -342,6 +344,7 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
                         if (task.isSuccessful()) {
                             FirebaseUser firebaseUser = mAuth.getCurrentUser();
                             User user = new User(firebaseUser.getDisplayName(), firebaseUser.getEmail());
+                            Toast.makeText(AuthActivity.this, "Xác thực với Facebook thành công", Toast.LENGTH_LONG).show();
                             createUserInfoIfNotExists(user);
 
                         } else {

@@ -140,14 +140,13 @@ public class NoteDialog extends AppCompatDialogFragment {
                 AwesomeValidation awesomeValidation;
                 awesomeValidation = new AwesomeValidation(BASIC);
 
-                awesomeValidation.addValidation(getActivity(), R.id.edt_title, RegexTemplate.NOT_EMPTY, R.string.err_title);
-                awesomeValidation.addValidation(getActivity(), R.id.edt_date, "^(?:(?:1[6-9]|[2-9]\\d)?\\d{2})(?:(?:(\\/|-|\\.)(?:0?[13578]|1[02])\\1(?:31))|(?:(\\/|-|\\.)(?:0?[13-9]|1[0-2])\\2(?:29|30)))$", R.string.err_title);
+                awesomeValidation.addValidation(edtTitle, RegexTemplate.NOT_EMPTY, getString(R.string.err_title));
+                awesomeValidation.addValidation(edtDate,
+                        "^(?:(?:1[6-9]|[2-9]\\d)?\\d{2})(?:(?:(\\/|-|\\.)(?:0?[13578]|1[02])\\1(?:31))|(?:(\\/|-|\\.)(?:0?[13-9]|1[0-2])\\2(?:29|30)))$",
+                        getString(R.string.err_date));
                 if(awesomeValidation.validate()){
                     NoteDialog.this.uploadData();
                     dialog.dismiss();
-                }
-                else {
-                    Toast.makeText(getActivity(), "Validation Faild", Toast.LENGTH_SHORT).show();
                 }
             }
         });
