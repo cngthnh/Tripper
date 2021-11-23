@@ -21,6 +21,10 @@
         android:textSize="30dp"
         android:textStyle="bold" />
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/profileTitle">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -32,19 +36,39 @@
             android:id="@+id/animationView"
             android:layout_width="150dp"
             android:layout_height="150dp"
+            android:layout_gravity="center_horizontal"
             android:layout_marginBottom="15dp"
-            auto:pattern="none"
-            android:layout_gravity="center_horizontal"/>
+            auto:pattern="none" />
 
-        <TextView
-            android:id="@+id/name"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/lato_black"
-            android:text="Tên người dùng"
-            android:textAlignment="center"
-            android:textColor="@color/purple"
-            android:textSize="25dp" />
+            android:layout_gravity="center_horizontal"
+            android:orientation="vertical">
+            <EditText
+                android:id="@+id/name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="50dp"
+                android:fontFamily="@font/lato_black"
+                android:text="Tên người dùng"
+                android:textColor="@color/purple"
+                android:textSize="25dp"
+                android:layout_marginHorizontal="15dp"
+                android:background="@android:color/transparent"
+                android:focusable="false"/>
+            <ImageButton
+                android:id="@+id/editName"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                android:layout_marginVertical="5dp"
+                android:layout_marginLeft="5dp"
+                android:adjustViewBounds="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_edit" />
+        </LinearLayout>
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
@@ -236,7 +260,9 @@
             auto:rippleColor="@color/light_rose"
             auto:strokeColor="@color/light_rose"
             auto:strokeWidth="2dp" />
-
+        <View android:layout_height="100dp"
+            android:layout_width="match_parent"/>
     </LinearLayout>
+    </ScrollView>
 
 </RelativeLayout>

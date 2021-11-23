@@ -78,9 +78,22 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.triplet.tripper.databinding.MapLayoutBinding;
 import com.triplet.tripper.models.User;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.dialog.MaterialDialogs;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.triplet.tripper.databinding.MapLayoutBinding;
+import com.triplet.tripper.models.location.LocationRecord;
 import com.triplet.tripper.models.map.Direction;
 import com.triplet.tripper.utils.ApiService;
 import com.triplet.tripper.utils.Client;
+import com.triplet.tripper.views.PointHolderView;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -154,6 +167,7 @@ public class MapsFragment extends Fragment {
             configureSearchView();
             setCurrentMap();
 
+            markerAll();
 
             if (ActivityCompat.checkSelfPermission(activity,
                     Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
@@ -170,7 +184,21 @@ public class MapsFragment extends Fragment {
             curMap.getUiSettings().setZoomControlsEnabled(true);
             configureMyLocationButton();
             configureCompassButton();
-            fusedLocationClient.getLastLocation()
+
+            PointHolderView pointHolderView = (PointHolderView) (getActivity().findViewById(R.id.point_holder));
+
+            if (pointHolderView.getLat() != null && pointHolderView.getLng() != null) {
+                LatLng myPosition = new LatLng(pointHolderView.getLat(), pointHolderView.getLng());
+                pointHolderView.setLng(null);
+                pointHolderView.setLat(null);
+                CameraPosition cameraPosition = new CameraPosition.Builder()
+                        .target(myPosition)
+                        .zoom(17)
+                        .tilt(30)
+                        .build();
+                curMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+            }
+            else fusedLocationClient.getLastLocation()
                     .addOnSuccessListener(activity, location -> {
                         // Got last known location. In some rare situations this can be null.
                         if (location != null) {
@@ -185,6 +213,33 @@ public class MapsFragment extends Fragment {
                     });
         }
     };
+
+
+    private void markerAll() {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference dataRef = database.getReference("history/" + FirebaseAuth.getInstance().getUid());
+
+        dataRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()){
+                    try {
+                        LocationRecord locationRecord = dataSnapshot.getValue(LocationRecord.class);
+                        LatLng latLng = new LatLng(locationRecord.getLatitude(), locationRecord.getLongitude());
+
+                        curMap.addMarker(new MarkerOptions().position(latLng).title(" ")
+                                .icon(bitmapDescriptorFromVector(getActivity(), R.drawable.ic_purple_marker)));
+                    } catch (Exception e) {
+                        continue;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+    }
 
     private void configureCompassButton() {
         View compassButton = this.getView().findViewWithTag("GoogleMapCompass");
@@ -208,7 +263,7 @@ public class MapsFragment extends Fragment {
     }
 
     private BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId) {
-        Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorResId);
+        Drawable vectorDrawable = context.getDrawable(vectorResId);
         vectorDrawable.setBounds(0, 0, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
         Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
@@ -220,8 +275,10 @@ public class MapsFragment extends Fragment {
         curMap.setOnMapLongClickListener(latLng -> {
             switch (directingState) {
                 case 0:
-                    MarkerDialog markerDialog = new MarkerDialog(curMap, latLng);
-                    markerDialog.show(getActivity().getSupportFragmentManager(), "MarkerCreate Dialog");
+                    Marker marker = curMap.addMarker(new MarkerOptions().position(latLng)
+                            .icon(bitmapDescriptorFromVector(getActivity(), R.drawable.ic_purple_marker)));
+                    NoteDialog noteDialog = new NoteDialog(curMap, marker);
+                    noteDialog.show(getActivity().getSupportFragmentManager(),"Note Dialog");
                     break;
                 case 1:
                     srcMarker = curMap.addMarker(new MarkerOptions().position(latLng)

@@ -48,7 +48,11 @@
         app:layout_anchor="@+id/bar"
         app:layout_anchorGravity="bottom|center"
         app:maxImageSize="30dp" />
-
+    <com.triplet.tripper.views.PointHolderView
+        android:id="@+id/point_holder"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone" />
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

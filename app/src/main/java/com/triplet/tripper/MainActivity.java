@@ -23,7 +23,6 @@ import com.triplet.tripper.databinding.ActivityMainBinding;
 
 
 public class MainActivity extends AppCompatActivity {
-
     ActivityMainBinding binding;
     int currentPosition = 0;
     FirebaseAuth mAuth;
@@ -80,17 +79,15 @@ public class MainActivity extends AppCompatActivity {
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
                 .replace(R.id.frame, new MapsFragment()).commit();
 
-
         binding.bottomNavigation.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 Fragment selectedFragment = null;
-
                 int nextPosition = 0;
-
                 int itemId = item.getItemId();
+
                 if (itemId == R.id.menu_history) {
-                    selectedFragment = null;
+                    selectedFragment = new LocationsFragment();
                     nextPosition = 1;
                 } else if (itemId == R.id.menu_profile) {
                     selectedFragment = new ProfileFragment();

@@ -34,7 +34,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
     }
 
-    // TODO: Rename and change types and number of parameters
     public static ProfileFragment newInstance(String param1, String param2) {
         ProfileFragment fragment = new ProfileFragment();
         Bundle args = new Bundle();
@@ -71,6 +70,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         binding.editAge.setOnClickListener(this);
         binding.editAddress.setOnClickListener(this);
         binding.editFavPlace.setOnClickListener(this);
+        binding.editName.setOnClickListener(this);
         binding.signOut.setOnClickListener(this);
     }
 
@@ -79,8 +79,13 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
                 if (task.isSuccessful()) {
-                    currentUser = task.getResult().getValue(User.class);
-                    updateUI();
+                    try {
+                        currentUser = task.getResult().getValue(User.class);
+                        updateUI();
+                    } catch (Exception e) {
+                        Toast.makeText(getContext(), "Không thể lấy thông tin cá nhân", Toast.LENGTH_LONG).show();
+                        currentUser = new User();
+                    }
                 }
                 else {
                     Log.d("firebase", String.valueOf(task.getResult().getValue()));
@@ -176,7 +181,21 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 binding.favPlace.setFocusableInTouchMode(true);
                 binding.favPlace.requestFocus();
             }
+        }
+        else if (viewId == R.id.editName) {
 
+            if (binding.name.isFocusable()) {
+                currentUser.setName(binding.name.getText().toString());
+                binding.name.setFocusable(false);
+                binding.name.setFocusableInTouchMode(false);
+                binding.editName.setImageResource(R.drawable.ic_edit);
+                writeUserData();
+            } else {
+                binding.editName.setImageResource(R.drawable.ic_done);
+                binding.name.setFocusable(true);
+                binding.name.setFocusableInTouchMode(true);
+                binding.name.requestFocus();
+            }
         }
         else if (viewId == R.id.signOut) {
             mAuth.signOut();
