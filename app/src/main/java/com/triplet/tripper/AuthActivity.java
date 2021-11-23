@@ -188,6 +188,8 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
 
                         } else {
                             binding.progressBar.setVisibility(View.GONE);
+                            binding.authFrame.findViewById(R.id.signIn).setEnabled(true);
+                            binding.authFrame.findViewById(R.id.anotherAuth).setEnabled(true);
                             Toast.makeText(AuthActivity.this, "Tài khoản đã được đăng ký hoặc thông tin đăng ký không hợp lệ", Toast.LENGTH_LONG).show();
                         }
                     }
