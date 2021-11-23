@@ -71,5 +71,5 @@
         app:strokeWidth="2dp"
         android:textColor="@color/purple"
         app:rippleColor="@color/purple"
-        android:text="Phương thức đăng nhập khác"/>
+        android:text="Phương thức khác"/>
 </LinearLayout>

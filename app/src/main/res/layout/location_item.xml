@@ -26,7 +26,7 @@
             android:id="@+id/cell_content_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
+            android:background="?colorOnPrimary"
             android:visibility="gone">
             <LinearLayout
                 android:layout_width="match_parent"
@@ -127,7 +127,6 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:textSize="13dp"
-                                android:textColor="@color/darker_gray"
                                 android:fontFamily="@font/lato_black"
                                 android:layout_marginBottom="5dp"
                                 android:text="Địa điểm"/>
@@ -136,7 +135,6 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:textSize="13dp"
-                                android:textColor="@color/darker_gray"
                                 android:fontFamily="@font/lato"
                                 android:layout_marginBottom="10dp"
                                 android:text="Hội An, Quảng Nam"/>
@@ -152,7 +150,6 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:textSize="13dp"
-                                android:textColor="@color/darker_gray"
                                 android:fontFamily="@font/lato_black"
                                 android:layout_marginBottom="5dp"
                                 android:text="Thời gian"/>
@@ -161,7 +158,6 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:textSize="13dp"
-                                android:textColor="@color/darker_gray"
                                 android:fontFamily="@font/lato"
                                 android:layout_marginBottom="10dp"
                                 android:text="20-11-2021"/>
@@ -337,7 +333,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:layout_weight="1"
-                    android:background="@color/white"
+                    android:background="?colorOnPrimary"
                     android:padding="20dp">
 
                     <TextView
@@ -357,7 +353,6 @@
                         android:layout_height="wrap_content"
                         android:text="Địa điểm: Phố cổ hộ an"
                         android:textSize="15dp"
-                        android:textColor="@color/black"
                         android:fontFamily="@font/lato"
                         android:layout_marginBottom="10dp"
                         />
@@ -370,14 +365,6 @@
                             android:layout_height="match_parent"
                             android:orientation="vertical"
                             android:layout_weight="1">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/lato"
-                                android:text="Chưa biết"
-                                android:textColor="@color/light_gray"
-                                android:textSize="13dp" />
                         </LinearLayout>
 
                         <LinearLayout

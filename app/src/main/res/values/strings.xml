@@ -1,12 +1,12 @@
 <resources>
     <string name="app_name">Tripper</string>
     <string name="map">Bản đồ</string>
-    <string name="history">Lịch sử</string>
+    <string name="history">Lịch sử sự kiện</string>
     <string name="edit">Sửa sự kiện</string>
     <string name="delete">Xoá sự kiện</string>
     <string name="profile">Trang cá nhân</string>
     <string name="invalid_email">Email không hợp lệ</string>
-    <string name="invalid_password">Mật khẩu không hợp lệ</string>
+    <string name="invalid_password">Mật khẩu không hợp lệ, mật khẩu phải có ít nhất 8 ký tự bao gồm chữ cái in thường, in hoa và chữ số</string>
     <string name="invalid_password_conf">Xác nhận mật khẩu không trùng khớp</string>
     <string name="event">Sự kiện</string>
     <string name="facebook_app_id">1587624581574685</string>

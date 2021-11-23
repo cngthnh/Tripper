@@ -42,7 +42,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
-                android:hint="Nhập từ bạn muốn tra cứu"
+                android:hint="Nhập sự kiện bạn muốn tra cứu"
                 android:padding="15dp"
                 android:textSize="15dp" />
             />

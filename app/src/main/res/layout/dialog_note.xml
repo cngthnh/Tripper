@@ -54,7 +54,7 @@
                 android:layout_height="45dp"
                 android:background="@drawable/bg_input_field"
                 android:fontFamily="@font/lato"
-                android:hint="Thời gian: dd-mm"
+                android:hint="Thời gian: dd-mm-yyyy"
                 android:padding="10dp"
                 android:layout_marginBottom="5dp"
                 android:textSize="15dp"

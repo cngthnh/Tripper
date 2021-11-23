@@ -142,7 +142,7 @@ public class NoteDialog extends AppCompatDialogFragment {
 
                 awesomeValidation.addValidation(edtTitle, RegexTemplate.NOT_EMPTY, getString(R.string.err_title));
                 awesomeValidation.addValidation(edtDate,
-                        "^(?:(?:1[6-9]|[2-9]\\d)?\\d{2})(?:(?:(\\/|-|\\.)(?:0?[13578]|1[02])\\1(?:31))|(?:(\\/|-|\\.)(?:0?[13-9]|1[0-2])\\2(?:29|30)))$",
+                        "^([0]?[1-9]|[1|2][0-9]|[3][0|1])[./-]([0]?[1-9]|[1][0-2])[./-]([0-9]{4}|[0-9]{2})$",
                         getString(R.string.err_date));
                 if(awesomeValidation.validate()){
                     NoteDialog.this.uploadData();
