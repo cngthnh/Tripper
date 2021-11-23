@@ -2,10 +2,14 @@ package com.triplet.tripper;
 
 import static android.app.Activity.RESULT_OK;
 
+import static com.basgeekball.awesomevalidation.ValidationStyle.BASIC;
+
 import android.app.Dialog;
 import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,6 +27,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
+import com.basgeekball.awesomevalidation.AwesomeValidation;
+import com.basgeekball.awesomevalidation.utility.RegexTemplate;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
@@ -42,7 +48,10 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.triplet.tripper.models.location.LocationRecord;
 
+import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 public class NoteDialog extends AppCompatDialogFragment {
     private GoogleMap map;
@@ -54,14 +63,10 @@ public class NoteDialog extends AppCompatDialogFragment {
     private StorageReference storageRef;
     private String image;
     private String video;
-    private String audio;
-    private String titleText;
-    private String dateText;
-    private String contentText;
-    private String locationText;
-    private String provinceText;
+
     private LocationRecord log;
-    LatLng latLng;
+    private LatLng latLng;
+
 
 
     EditText edtTitle;
@@ -108,6 +113,8 @@ public class NoteDialog extends AppCompatDialogFragment {
 
         findView(view);
 
+
+
         if (log != null) {
             setView();
         }
@@ -129,8 +136,19 @@ public class NoteDialog extends AppCompatDialogFragment {
         btSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                NoteDialog.this.uploadData();
-                dialog.dismiss();
+
+                AwesomeValidation awesomeValidation;
+                awesomeValidation = new AwesomeValidation(BASIC);
+
+                awesomeValidation.addValidation(getActivity(), R.id.edt_title, RegexTemplate.NOT_EMPTY, R.string.err_title);
+                awesomeValidation.addValidation(getActivity(), R.id.edt_date, "^(?:(?:1[6-9]|[2-9]\\d)?\\d{2})(?:(?:(\\/|-|\\.)(?:0?[13578]|1[02])\\1(?:31))|(?:(\\/|-|\\.)(?:0?[13-9]|1[0-2])\\2(?:29|30)))$", R.string.err_title);
+                if(awesomeValidation.validate()){
+                    NoteDialog.this.uploadData();
+                    dialog.dismiss();
+                }
+                else {
+                    Toast.makeText(getActivity(), "Validation Faild", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -198,13 +216,34 @@ public class NoteDialog extends AppCompatDialogFragment {
         String contentText = edtContent.getText().toString();
         String locationText = edtLocation.getText().toString();
 
-
-
         String lat = String.valueOf(latLng.latitude);
         String lng = String.valueOf(latLng.longitude);
 
+        String province = null;
+        Geocoder gcd = new Geocoder(getContext());
+        List<Address> addresses = null;
+        try {
+            addresses = gcd.getFromLocation(latLng.latitude, latLng.longitude, 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if(addresses != null)
+        {
+            if (addresses.size() > 0) {
+                province = new String(addresses.get(0).getAdminArea());
+            }
+            else {
+                province = "";
+            }
 
-        LocationRecord location = new LocationRecord(" ", dateText, titleText,locationText, contentText, image,video, latLng.latitude, latLng.longitude);
+        }
+        else {
+            province = "";
+        }
+
+
+
+        LocationRecord location = new LocationRecord(province, dateText, titleText,locationText, contentText, image,video, latLng.latitude, latLng.longitude);
 
         if(imgUri != null){
             uploadDataFileToFireBase(imgUri, location);

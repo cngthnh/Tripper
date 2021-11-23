@@ -10,6 +10,7 @@ import android.graphics.Canvas;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Environment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -46,7 +47,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 
 public class LocationsAdapter extends RecyclerView.Adapter<LocationsAdapter.LocationViewHolder>{
@@ -56,6 +59,7 @@ public class LocationsAdapter extends RecyclerView.Adapter<LocationsAdapter.Loca
     private List<LocationRecord> mListLocation;
 
 
+
     public LocationsAdapter(Context mContext, Activity mActivity) {
         this.mContext = mContext;
         this.mActivity = mActivity;
@@ -63,7 +67,6 @@ public class LocationsAdapter extends RecyclerView.Adapter<LocationsAdapter.Loca
 
     public void setData(List<LocationRecord> mListLocation) {
         this.mListLocation = mListLocation;
-        notifyDataSetChanged();
     }
 
 
@@ -80,7 +83,7 @@ public class LocationsAdapter extends RecyclerView.Adapter<LocationsAdapter.Loca
         if(location == null){
             return;
         }
-        holder.province.setText("Quảng Nam");
+        holder.province.setText(location.getProvince());
         holder.date.setText(location.getDate());
         holder.event.setText("Nội dung: " + location.getEvent());
         holder.location.setText("Địa điểm: " + location.getLocation());
@@ -213,6 +216,13 @@ public class LocationsAdapter extends RecyclerView.Adapter<LocationsAdapter.Loca
         }
         return 0;
     }
+
+    public void filterList(List<LocationRecord> filteredList) {
+        mListLocation = filteredList;
+        notifyDataSetChanged();
+    }
+
+
 
     public  class LocationViewHolder extends RecyclerView.ViewHolder{
 

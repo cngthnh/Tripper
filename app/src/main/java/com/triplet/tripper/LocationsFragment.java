@@ -1,6 +1,8 @@
 package com.triplet.tripper;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,13 +25,13 @@ import com.triplet.tripper.models.location.LocationRecord;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class LocationsFragment extends Fragment {
 
     FragmentLocationsBinding binding;
     LocationsAdapter locationsAdapter = null;
     List<LocationRecord> list;
-    LatLng latLng;
 
     public LocationsFragment() {
         // Required empty public constructor
@@ -48,16 +50,48 @@ public class LocationsFragment extends Fragment {
         View view = binding.getRoot();
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         binding.recyclerView.setLayoutManager(layoutManager);
+
+
+
         locationsAdapter = new LocationsAdapter(getContext(), getActivity());
         list = new ArrayList<>();
         getListLocationFromRealtimeDatabase();
         locationsAdapter.setData(list);
         locationsAdapter.notifyDataSetChanged();
+
         binding.recyclerView.setVisibility(View.VISIBLE);
         binding.recyclerView.setAdapter(locationsAdapter);
 
+        binding.edtSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                filter(editable.toString());
+            }
+        });
+
         return view;
     }
+
+    private void filter(String s) {
+        List<LocationRecord> filteredList = new ArrayList<>();
+        for(LocationRecord item: list){
+            if(item.getEvent().toLowerCase().contains(s.toLowerCase())){
+                filteredList.add(item);
+            }
+        }
+        locationsAdapter.filterList(filteredList);
+    }
+
 
     private void getListLocationFromRealtimeDatabase() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();

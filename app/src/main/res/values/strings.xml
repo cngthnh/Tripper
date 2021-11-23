@@ -14,4 +14,6 @@
     <string name="mapbox_access_token">pk.eyJ1IjoiY25ndGhuaCIsImEiOiJja3c3Nm1tN2gwZ3RxMm9wYTFrNDlzMmVsIn0.s7SGiYLhUi5hzTO24Qqx1A</string>
     <string name="pattern">Trong những di tích còn lại thì chùa Keo là một di tích có quy mô to lớn. Có lẽ ở nước ta chưa có một ngôi chùa nào
         lại được tới 57.000m2 với 107 gian chùa lớn (trước là 154 gian) làm toàn bằng gỗ lim.</string>
+    <string name="err_title">Vui lòng nhập tiêu đề</string>
+    <string name="err_date">Định dạng ngày không hợp lệ</string>
 </resources>
